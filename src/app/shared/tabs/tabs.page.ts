@@ -8,9 +8,6 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  triangle,
-  ellipse,
-  square,
   planetOutline,
   addCircleOutline,
   settingsOutline,

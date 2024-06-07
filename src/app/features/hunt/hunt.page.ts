@@ -7,7 +7,7 @@ import {
 } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-tab2',
+  selector: 'app-hunt',
   templateUrl: 'hunt.page.html',
   styleUrls: ['hunt.page.scss'],
   standalone: true,
