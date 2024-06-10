@@ -7,6 +7,13 @@ import {
   informationCircleOutline,
 } from 'ionicons/icons';
 import { FeedbackIconType } from '../../enums/feedback. enums';
+import {
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonIcon,
+} from '@ionic/angular/standalone';
 
 /**
  * A component to display feedback messages.
@@ -18,7 +25,7 @@ import { FeedbackIconType } from '../../enums/feedback. enums';
   selector: 'app-feedback',
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.scss'],
-  imports: [IonicModule],
+  imports: [IonIcon, IonCardTitle, IonCardHeader, IonCard, IonCardContent],
   standalone: true,
 })
 export class FeedbackComponent {
