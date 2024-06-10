@@ -59,7 +59,7 @@ import { FeedbackIconType } from '../../enums/feedback. enums';
     LoadingComponent,
   ],
 })
-export class HomePage implements OnInit {
+export class HomePage {
   protected hunts: ScavengerHunt[] = [];
   protected isLoading = true;
   protected readonly FeedbackIcon = FeedbackIconType;
@@ -77,7 +77,7 @@ export class HomePage implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ionViewWillEnter() {
     await this.loadHunts();
   }
 
@@ -111,5 +111,11 @@ export class HomePage implements OnInit {
     } catch (error) {
       await this.toastService.presentError('Failed to delete scavenger hunt');
     }
+  }
+
+  addSamples() {
+    this.huntService.addSamples().then(() => {
+      this.loadHunts();
+    });
   }
 }

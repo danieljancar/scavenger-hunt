@@ -18,7 +18,7 @@ export class StorageService {
       }
     }
 
-    return (totalSize / 1024).toFixed(2);
+    return totalSize;
   }
 
   public async clearStorage() {

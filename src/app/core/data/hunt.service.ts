@@ -40,4 +40,45 @@ export class HuntService {
       console.error('Error deleting hunt:', error);
     }
   }
+
+  addSamples(): Promise<void> {
+    return this.saveHunts([
+      {
+        name: 'Scavenger Hunt 1',
+        rewards: this.randomNum(),
+        penalties: this.randomNum(),
+        time: {
+          start: new Date(),
+          end: new Date(),
+        },
+        date: new Date(),
+      },
+      {
+        name: 'Scavenger Hunt 2',
+        rewards: this.randomNum(),
+        penalties: this.randomNum(),
+        time: {
+          start: new Date(),
+          end: new Date(),
+        },
+        date: new Date(),
+      },
+      {
+        name: 'Scavenger Hunt 3',
+        rewards: this.randomNum(),
+        penalties: this.randomNum(),
+        time: {
+          start: new Date(),
+          end: new Date(),
+        },
+        date: new Date(),
+      },
+    ]);
+  }
+
+  private randomNum(): number {
+    const min = 1;
+    const max = 4;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 }
