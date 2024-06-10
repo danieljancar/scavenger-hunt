@@ -4,6 +4,7 @@ import { GeolocationComponent } from '../../features/hunt/tasks/geolocation/geol
 import { QrcodeComponent } from '../../features/hunt/tasks/qrcode/qrcode.component';
 import { OrientationComponent } from '../../features/hunt/tasks/orientation/orientation.component';
 import { ChargeComponent } from '../../features/hunt/tasks/charge/charge.component';
+import { FinishComponent } from '../../features/hunt/finish/finish.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,10 @@ export const routes: Routes = [
           {
             path: 'charge',
             component: ChargeComponent,
+          },
+          {
+            path: 'finish',
+            component: FinishComponent,
           },
         ],
       },

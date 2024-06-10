@@ -1,1 +1,27 @@
-<p>charge works!</p>
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="onCancelHunt()"> Cancel </ion-button>
+    </ion-buttons>
+    <ion-title>{{ huntMeta?.name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!taskDone" (click)="continueTask()">
+        Continue
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-item class="ion-margin-vertical" lines="none">
+    <ion-label>
+      <h2>Task 4</h2>
+      <h1>Device Status</h1>
+      <p>Connect your device to the charger and finish the hunt.</p>
+    </ion-label>
+  </ion-item>
+
+  <ion-label class="ion-justify-content-center task-icon__container">
+    <ion-icon name="battery-half-outline"></ion-icon>
+  </ion-label>
+</ion-content>

@@ -1,13 +1,64 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
+import { HuntMeta } from '../../../../types/hunt.types';
+import { HuntService } from '../../../../core/data/hunt.service';
+import { HuntCommunicationService } from '../../../../core/util/hunt-communication.service';
+import { addIcons } from 'ionicons';
+import { cameraOutline, locationOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-qrcode',
   templateUrl: './qrcode.component.html',
   styleUrls: ['./qrcode.component.scss'],
   standalone: true,
+  imports: [
+    IonButton,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonTitle,
+    IonToolbar,
+  ],
 })
 export class QrcodeComponent implements OnInit {
-  constructor() {}
+  @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
+  protected huntMeta!: HuntMeta;
+  protected taskDone = true;
 
-  ngOnInit() {}
+  constructor(
+    private huntService: HuntService,
+    private huntCommunicationService: HuntCommunicationService,
+  ) {
+    addIcons({ cameraOutline });
+  }
+
+  async ngOnInit() {
+    this.huntMeta = await this.huntService.getCurrentHuntMeta();
+  }
+
+  onCancelHunt() {
+    this.huntCommunicationService.cancelHunt();
+  }
+
+  async continueTask() {
+    await this.completeTask();
+  }
+
+  private async completeTask() {
+    this.taskDone = true;
+    await this.huntService.completeCurrentTask();
+  }
 }

@@ -1,17 +1,19 @@
+@if (!huntStarted) {
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="light">
     <ion-title>Hunt</ion-title>
   </ion-toolbar>
 </ion-header>
+}
 
 <ion-content [fullscreen]="true">
+  @if (!huntStarted) {
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Hunt</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  @if (!huntStarted) {
+  } @if (!huntStarted) {
   <div class="ion-padding">
     <ion-item>
       <ion-input

@@ -100,3 +100,9 @@
   --ion-color-dark-shade: #292929;
   --ion-color-dark-tint: #444444;
 }
+
+.task-icon__container {
+  display: flex;
+  margin-top: 20vh;
+  font-size: 10vh;
+}

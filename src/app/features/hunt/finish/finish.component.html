@@ -1,13 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="onCancelHunt()"> Cancel </ion-button>
+      <ion-button (click)="discardHunt()"> Discard </ion-button>
     </ion-buttons>
     <ion-title>{{ huntMeta?.name }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button [disabled]="!taskDone" (click)="continueTask()">
-        Continue
-      </ion-button>
+      <ion-button (click)="saveHunt()"> Save </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -15,13 +13,13 @@
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-item class="ion-margin-vertical" lines="none">
     <ion-label>
-      <h2>Task 1</h2>
-      <h1>Geolocation</h1>
-      <p>Go outside to the ping-pong table. Get your next task there.</p>
+      <h2>Status</h2>
+      <h1>Finished 🎉</h1>
+      <ion-list> rewards: fasf </ion-list>
     </ion-label>
   </ion-item>
 
   <ion-label class="ion-justify-content-center task-icon__container">
-    <ion-icon name="location-outline"></ion-icon>
+    <ion-icon name="happy-outline"></ion-icon>
   </ion-label>
 </ion-content>
