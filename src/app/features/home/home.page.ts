@@ -82,7 +82,7 @@ export class HomePage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    await this.refreshHunts(null);
+    await this.refreshHunts();
   }
 
   async loadHunts() {
@@ -97,14 +97,13 @@ export class HomePage implements OnInit {
         .presentError('Failed to load scavenger hunts')
         .then(() => {
           this.isLoading = false;
-          this.refreshHunts(null);
+          this.refreshHunts();
         });
     }
   }
 
-  async refreshHunts(event: any) {
+  async refreshHunts() {
     await this.loadHunts();
-    event.target.complete();
   }
 
   async deleteHunt(index: number) {
