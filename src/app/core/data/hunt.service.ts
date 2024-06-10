@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
-import { ScavengerHunt } from '../types/hunt.types';
+import { ScavengerHunt } from '../../types/hunt.types';
 
 @Injectable({
   providedIn: 'root',

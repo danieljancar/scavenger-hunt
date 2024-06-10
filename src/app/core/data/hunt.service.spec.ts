@@ -1,5 +1,5 @@
 import { HuntService } from './hunt.service';
-import { ScavengerHunt } from '../types/hunt.types';
+import { ScavengerHunt } from '../../types/hunt.types';
 import { Preferences } from '@capacitor/preferences';
 
 describe('HuntService', () => {

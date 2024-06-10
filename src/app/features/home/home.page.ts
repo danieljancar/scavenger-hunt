@@ -25,7 +25,7 @@ import {
 } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { ScavengerHunt } from '../../types/hunt.types';
-import { HuntService } from '../../core/hunt.service';
+import { HuntService } from '../../core/data/hunt.service';
 import { ToastService } from '../../util/toast.service';
 import { FeedbackComponent } from '../../shared/feedback/feedback.component';
 import { DateTimePipe } from '../../pipes/date.pipe';
