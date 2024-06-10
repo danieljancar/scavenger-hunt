@@ -15,6 +15,8 @@ import {
   IonItemOptions,
   IonItemOption,
   IonNote,
+  ToastController,
+  AlertController,
 } from '@ionic/angular/standalone';
 import {
   calendarOutline,
@@ -26,7 +28,6 @@ import {
 import { addIcons } from 'ionicons';
 import { ScavengerHunt } from '../../types/hunt.types';
 import { HuntService } from '../../core/data/hunt.service';
-import { ToastService } from '../../util/toast.service';
 import { FeedbackComponent } from '../../shared/feedback/feedback.component';
 import { DateTimePipe } from '../../pipes/date.pipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
@@ -66,7 +67,8 @@ export class HomePage implements OnInit {
 
   constructor(
     private huntService: HuntService,
-    private toastService: ToastService,
+    private toastController: ToastController,
+    private alertController: AlertController,
   ) {
     addIcons({
       trashOutline,
@@ -93,12 +95,12 @@ export class HomePage implements OnInit {
         return hunts;
       });
     } catch (error) {
-      await this.toastService
-        .presentError('Failed to load scavenger hunts')
-        .then(() => {
-          this.isLoading = false;
-          this.refreshHunts();
-        });
+      this.isLoading = false;
+      const toast = await this.toastController.create({
+        message: 'Failed to load scavenger hunts',
+        duration: 2000,
+      });
+      await toast.present();
     }
   }
 
@@ -107,18 +109,47 @@ export class HomePage implements OnInit {
   }
 
   async deleteHunt(index: number) {
-    try {
-      await this.huntService.deleteHunt(index);
-      this.hunts = await this.huntService.getHunts();
-      await this.toastService.presentSuccess('Scavenger hunt deleted');
-    } catch (error) {
-      await this.toastService.presentError('Failed to delete scavenger hunt');
-    }
+    const alert = await this.alertController.create({
+      header: 'Delete Scavenger Hunt',
+      message: 'Are you sure you want to delete this scavenger hunt?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Delete',
+          handler: () => this.deleteHuntAction(index),
+        },
+      ],
+    });
+    await alert.present();
   }
 
   addSamples() {
     this.huntService.addSamples().then(() => {
       this.loadHunts();
     });
+  }
+
+  private async deleteHuntAction(index: number) {
+    try {
+      await this.huntService.deleteHunt(index).then(async () => {
+        this.hunts = await this.huntService.getHunts();
+      });
+      const toast = await this.toastController.create({
+        message: 'Scavenger hunt deleted',
+        duration: 2000,
+        color: 'success',
+      });
+      await toast.present();
+    } catch (error) {
+      const toast = await this.toastController.create({
+        message: 'Failed to delete scavenger hunt',
+        duration: 2000,
+        color: 'danger',
+      });
+      await toast.present();
+    }
   }
 }

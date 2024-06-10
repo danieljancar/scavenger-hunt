@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  AlertController,
   IonButton,
   IonContent,
   IonHeader,
@@ -13,6 +14,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { DeviceService } from '../../core/native/device.service';
 import { DeviceInfo } from '../../types/device.types';
@@ -52,6 +54,8 @@ export class SettingsPage implements OnInit {
   constructor(
     private deviceService: DeviceService,
     private storageService: StorageService,
+    private alertController: AlertController,
+    private toastController: ToastController,
   ) {}
 
   async ngOnInit() {
@@ -79,14 +83,40 @@ export class SettingsPage implements OnInit {
   }
 
   async clearStorage() {
+    const alert = await this.alertController.create({
+      header: 'Clear Storage',
+      message: 'Are you sure you want to clear all data?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Clear',
+          handler: () => {
+            this.clearStorageAction();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  private async clearStorageAction() {
     this.clearStorageButtonLoading = true;
     await this.storageService
       .clearStorage()
       .then(async () => {
-        this.storageUsage = Number(await this.storageService.getStorageUsage());
+        await this.loadStorageUsage();
       })
       .finally(() => {
         this.clearStorageButtonLoading = false;
       });
+    const toast = await this.toastController.create({
+      message: 'Storage cleared',
+      duration: 2000,
+      color: 'success',
+    });
+    await toast.present();
   }
 }

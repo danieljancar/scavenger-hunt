@@ -39,9 +39,9 @@ export class DateTimePipe implements PipeTransform {
       if (seconds < 60) {
         return 'Just now';
       } else if (minutes === 1) {
-        return '1min ago';
+        return '1 min ago';
       } else if (minutes < 60) {
-        return `${minutes} minutes ago`;
+        return `${minutes} mins ago`;
       } else if (hours === 1) {
         return '1h ago';
       } else if (hours < 24) {
