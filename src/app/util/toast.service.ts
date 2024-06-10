@@ -26,7 +26,7 @@ export class ToastService {
       message,
       duration,
       color,
-      position: 'bottom',
+      position: 'top',
     });
     await toast.present();
   }

@@ -39,17 +39,17 @@ export class DateTimePipe implements PipeTransform {
       if (seconds < 60) {
         return 'Just now';
       } else if (minutes === 1) {
-        return '1 minute ago';
+        return '1min ago';
       } else if (minutes < 60) {
         return `${minutes} minutes ago`;
       } else if (hours === 1) {
-        return '1 hour ago';
+        return '1h ago';
       } else if (hours < 24) {
-        return `${hours} hours ago`;
+        return `${hours} hs ago`;
       } else if (days === 1) {
         return 'Yesterday';
       } else if (days < 7) {
-        return `${days} days ago`;
+        return `${days}d ago`;
       } else {
         return date.toLocaleDateString();
       }
