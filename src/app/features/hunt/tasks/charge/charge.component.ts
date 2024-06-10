@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-charge',
   templateUrl: './charge.component.html',
   styleUrls: ['./charge.component.scss'],
+  standalone: true,
 })
 export class ChargeComponent implements OnInit {
   constructor() {}

@@ -5,9 +5,38 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  @if (!huntStarted) {
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">New Hunt</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ion-content class="ion-padding">
+    <ion-item>
+      <ion-input
+        [clearInput]="true"
+        label="Name"
+        labelPlacement="stacked"
+        placeholder="Enter name..."
+        [(ngModel)]="huntMeta.name"
+      ></ion-input>
+    </ion-item>
+    <ion-button
+      class="ion-margin-top"
+      expand="block"
+      [disabled]="!huntMeta.name"
+      (click)="startHunt()"
+      >Start
+    </ion-button>
+  </ion-content>
+  } @else {
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Hunt</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <router-outlet />
+  }
 </ion-content>

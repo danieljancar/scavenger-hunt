@@ -1,5 +1,9 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { GeolocationComponent } from '../../features/hunt/tasks/geolocation/geolocation.component';
+import { QrcodeComponent } from '../../features/hunt/tasks/qrcode/qrcode.component';
+import { OrientationComponent } from '../../features/hunt/tasks/orientation/orientation.component';
+import { ChargeComponent } from '../../features/hunt/tasks/charge/charge.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +19,24 @@ export const routes: Routes = [
         path: 'hunt',
         loadComponent: () =>
           import('../../features/hunt/hunt.page').then((m) => m.HuntPage),
+        children: [
+          {
+            path: 'geolocation',
+            component: GeolocationComponent,
+          },
+          {
+            path: 'qrcode',
+            component: QrcodeComponent,
+          },
+          {
+            path: 'orientation',
+            component: OrientationComponent,
+          },
+          {
+            path: 'charge',
+            component: ChargeComponent,
+          },
+        ],
       },
       {
         path: 'settings',
