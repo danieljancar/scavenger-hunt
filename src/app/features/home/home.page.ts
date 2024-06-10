@@ -59,7 +59,7 @@ import { FeedbackIconType } from '../../enums/feedback. enums';
     LoadingComponent,
   ],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   protected hunts: ScavengerHunt[] = [];
   protected isLoading = true;
   protected readonly FeedbackIcon = FeedbackIconType;
@@ -77,7 +77,7 @@ export class HomePage {
     });
   }
 
-  async ionViewWillEnter() {
+  async ngOnInit() {
     await this.loadHunts();
   }
 

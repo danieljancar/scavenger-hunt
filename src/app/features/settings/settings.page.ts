@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   IonButton,
   IonContent,
@@ -43,7 +43,7 @@ import { FormatBytesPipe } from '../../pipes/format-bytes.pipe';
     IonRefresher,
   ],
 })
-export class SettingsPage {
+export class SettingsPage implements OnInit {
   protected deviceInfo: DeviceInfo | null = null;
   protected storageUsage: number | null = null;
   protected isLoading = false;
@@ -54,13 +54,20 @@ export class SettingsPage {
     private storageService: StorageService,
   ) {}
 
-  async ionViewWillEnter() {
+  async ngOnInit() {
     await this.loadDeviceInfo();
+  }
+
+  async ionViewWillEnter() {
+    await this.loadStorageUsage();
+  }
+
+  async loadStorageUsage() {
+    this.storageUsage = Number(await this.storageService.getStorageUsage());
   }
 
   async loadDeviceInfo() {
     this.isLoading = true;
-    this.storageUsage = Number(await this.storageService.getStorageUsage());
     await this.deviceService
       .getDeviceInfo()
       .then((deviceInfo) => {
