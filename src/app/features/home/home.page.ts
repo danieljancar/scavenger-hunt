@@ -96,11 +96,14 @@ export class HomePage implements OnInit {
       });
     } catch (error) {
       this.isLoading = false;
-      const toast = await this.toastController.create({
-        message: 'Failed to load scavenger hunts',
-        duration: 2000,
-      });
-      await toast.present();
+      await this.toastController
+        .create({
+          message: 'Failed to load scavenger hunts',
+          duration: 2000,
+          color: 'danger',
+          position: 'top',
+        })
+        .then((t) => t.present());
     }
   }
 
@@ -109,26 +112,36 @@ export class HomePage implements OnInit {
   }
 
   async deleteHunt(index: number) {
-    const alert = await this.alertController.create({
-      header: 'Delete Scavenger Hunt',
-      message: 'Are you sure you want to delete this scavenger hunt?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Delete',
-          handler: () => this.deleteHuntAction(index),
-        },
-      ],
-    });
-    await alert.present();
+    await this.alertController
+      .create({
+        header: 'Delete Scavenger Hunt',
+        message: 'Are you sure you want to delete this scavenger hunt?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+          },
+          {
+            text: 'Delete',
+            handler: () => this.deleteHuntAction(index),
+          },
+        ],
+      })
+      .then((a) => a.present());
   }
 
   addSamples() {
     this.huntService.addSamples().then(() => {
-      this.loadHunts();
+      this.loadHunts().then(() => {
+        this.toastController
+          .create({
+            message: 'Sample hunts added',
+            duration: 2000,
+            color: 'success',
+            position: 'top',
+          })
+          .then((t) => t.present());
+      });
     });
   }
 
@@ -137,19 +150,23 @@ export class HomePage implements OnInit {
       await this.huntService.deleteHunt(index).then(async () => {
         this.hunts = await this.huntService.getHunts();
       });
-      const toast = await this.toastController.create({
-        message: 'Scavenger hunt deleted',
-        duration: 2000,
-        color: 'success',
-      });
-      await toast.present();
+      await this.toastController
+        .create({
+          message: 'Scavenger hunt deleted',
+          duration: 2000,
+          color: 'success',
+          position: 'top',
+        })
+        .then((t) => t.present());
     } catch (error) {
-      const toast = await this.toastController.create({
-        message: 'Failed to delete scavenger hunt',
-        duration: 2000,
-        color: 'danger',
-      });
-      await toast.present();
+      await this.toastController
+        .create({
+          message: 'Failed to delete scavenger hunt',
+          duration: 2000,
+          color: 'danger',
+          position: 'top',
+        })
+        .then((t) => t.present());
     }
   }
 }

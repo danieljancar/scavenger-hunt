@@ -83,23 +83,24 @@ export class SettingsPage implements OnInit {
   }
 
   async clearStorage() {
-    const alert = await this.alertController.create({
-      header: 'Clear Storage',
-      message: 'Are you sure you want to clear all data?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Clear',
-          handler: () => {
-            this.clearStorageAction();
+    await this.alertController
+      .create({
+        header: 'Clear Storage',
+        message: 'Are you sure you want to clear all data?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
           },
-        },
-      ],
-    });
-    await alert.present();
+          {
+            text: 'Clear',
+            handler: () => {
+              this.clearStorageAction();
+            },
+          },
+        ],
+      })
+      .then((a) => a.present());
   }
 
   private async clearStorageAction() {
@@ -112,11 +113,13 @@ export class SettingsPage implements OnInit {
       .finally(() => {
         this.clearStorageButtonLoading = false;
       });
-    const toast = await this.toastController.create({
-      message: 'Storage cleared',
-      duration: 2000,
-      color: 'success',
-    });
-    await toast.present();
+    await this.toastController
+      .create({
+        message: 'Storage cleared',
+        duration: 2000,
+        color: 'success',
+        position: 'top',
+      })
+      .then((t) => t.present());
   }
 }
