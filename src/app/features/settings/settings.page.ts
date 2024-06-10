@@ -16,6 +16,7 @@ import { DeviceService } from '../../core/native/device.service';
 import { DeviceInfo } from '../../types/device.types';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { StorageService } from '../../core/native/storage.service';
+import { FormatBytesPipe } from '../../pipes/format-bytes.pipe';
 
 @Component({
   selector: 'app-settings',
@@ -35,6 +36,7 @@ import { StorageService } from '../../core/native/storage.service';
     IonProgressBar,
     IonButton,
     IonSpinner,
+    FormatBytesPipe,
   ],
 })
 export class SettingsPage implements OnInit {
