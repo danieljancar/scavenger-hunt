@@ -81,6 +81,10 @@ export class HomePage implements OnInit {
     await this.loadHunts();
   }
 
+  async ionViewWillEnter() {
+    await this.refreshHunts(null);
+  }
+
   async loadHunts() {
     this.isLoading = true;
     try {
