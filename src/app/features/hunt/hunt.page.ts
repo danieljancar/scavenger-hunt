@@ -42,6 +42,7 @@ export class HuntPage implements OnInit, OnDestroy {
     date: new Date(),
   };
   private routerSubscription: Subscription | undefined;
+  private resetInProgress = false;
 
   constructor(
     private router: Router,
@@ -49,28 +50,21 @@ export class HuntPage implements OnInit, OnDestroy {
     private huntCommunicationService: HuntCommunicationService,
   ) {}
 
-  async ngOnInit() {
-    const huntMeta = await this.huntService.getCurrentHuntMeta();
-    if (huntMeta) {
-      this.huntMeta = huntMeta;
-      this.huntStarted = true;
-    }
-
+  ngOnInit() {
     this.routerSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        if (!event.url.includes('/tabs/hunt')) {
-          this.resetHunt();
-        }
+      if (
+        event instanceof NavigationStart &&
+        !event.url.includes('/tabs/hunt')
+      ) {
+        this.resetHunt();
       }
     });
 
     this.huntCommunicationService.cancelHunt$.subscribe(() => {
-      this.resetHunt();
+      if (!this.resetInProgress) {
+        this.resetHunt();
+      }
     });
-  }
-
-  ionViewWillEnter() {
-    this.huntStarted = false;
   }
 
   ngOnDestroy() {
@@ -98,6 +92,11 @@ export class HuntPage implements OnInit, OnDestroy {
   }
 
   async resetHunt() {
+    if (this.resetInProgress) {
+      return;
+    }
+    this.resetInProgress = true;
+    console.log('Hunt reset');
     this.huntStarted = false;
     this.huntMeta = {
       penalties: 0,
@@ -107,5 +106,8 @@ export class HuntPage implements OnInit, OnDestroy {
       date: new Date(),
     };
     await this.huntService.clearCurrentHuntMeta();
+    this.huntService.currentTaskIndex = 0;
+    this.huntCommunicationService.cancelHunt();
+    this.resetInProgress = false;
   }
 }

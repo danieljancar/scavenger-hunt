@@ -73,6 +73,8 @@ export class FinishComponent implements OnInit {
   }
 
   onCancelHunt() {
+    this.resetHunt.emit();
+    this.huntService.currentTaskIndex = 0;
     this.huntCommunicationService.cancelHunt();
   }
 

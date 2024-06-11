@@ -18,6 +18,7 @@ import { addIcons } from 'ionicons';
 import { locationOutline } from 'ionicons/icons';
 import { HuntCommunicationService } from '../../../../core/util/hunt-communication.service';
 import { Geolocation, Position } from '@capacitor/geolocation';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-geolocation',
@@ -80,10 +81,10 @@ export class GeolocationComponent implements OnInit {
 
   async getCurrentLocation() {
     const position = await Geolocation.getCurrentPosition();
-    this.checkProximity(position);
+    await this.checkProximity(position);
   }
 
-  checkProximity(position: Position) {
+  async checkProximity(position: Position) {
     const distance = this.calculateDistance(
       position.coords.latitude,
       position.coords.longitude,
@@ -91,6 +92,7 @@ export class GeolocationComponent implements OnInit {
       this.targetLongitude,
     );
     if (distance <= this.proximityThreshold) {
+      await Haptics.vibrate();
       this.taskDone = true;
     }
   }
@@ -135,6 +137,8 @@ export class GeolocationComponent implements OnInit {
   }
 
   async onCancelHunt() {
+    this.resetHunt.emit();
+    this.huntService.currentTaskIndex = 0;
     this.huntCommunicationService.cancelHunt();
   }
 

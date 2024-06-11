@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { ScavengerHunt, HuntMeta } from '../../types/hunt.types';
+
 @Injectable({
   providedIn: 'root',
 })
 export class HuntService {
+  public currentTaskIndex = 0;
   private readonly HUNTS_KEY = 'hunts';
   private readonly CURRENT_HUNT_KEY = 'currentHunt';
   private readonly tasks = ['geolocation', 'qrcode', 'orientation', 'charge'];
-  public currentTaskIndex = 0;
 
   constructor(private router: Router) {}
 
@@ -82,20 +83,21 @@ export class HuntService {
   }
 
   async completeHunt(huntMeta: HuntMeta) {
+    console.log('complete hunt (hunt.service)');
     huntMeta.time.end = new Date();
     await this.saveCurrentHuntMeta(huntMeta);
-    await this.router.navigate(['/tabs/hunt/finish'], {
-      state: { huntMeta: huntMeta },
-    });
+    await this.router.navigate(['/tabs/hunt/finish']);
   }
 
   async getCurrentHuntMeta(): Promise<HuntMeta> {
+    console.log('getting current hunt meta');
     const { value } = await Preferences.get({ key: this.CURRENT_HUNT_KEY });
     return value ? JSON.parse(value) : null;
   }
 
   async saveCurrentHuntMeta(huntMeta: HuntMeta): Promise<void> {
     try {
+      console.log('saving current hunt meta (as meta)');
       await Preferences.set({
         key: this.CURRENT_HUNT_KEY,
         value: JSON.stringify(huntMeta),
@@ -107,6 +109,7 @@ export class HuntService {
 
   async clearCurrentHuntMeta(): Promise<void> {
     try {
+      console.log('clearing hunt meta');
       await Preferences.remove({ key: this.CURRENT_HUNT_KEY });
     } catch (error) {
       console.error(
@@ -151,19 +154,6 @@ export class HuntService {
     ]);
   }
 
-  private randomNum(): number {
-    const min = 1;
-    const max = 4;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  private async navigateToCurrentTask(huntMeta: HuntMeta) {
-    const task = this.tasks[this.currentTaskIndex];
-    await this.router.navigate([`/tabs/hunt/${task}`], {
-      state: { huntMeta },
-    });
-  }
-
   calculateRewardsAndPenalties(
     startTime: Date,
     endTime: Date,
@@ -182,5 +172,18 @@ export class HuntService {
     }
 
     return { rewards, penalties };
+  }
+
+  private randomNum(): number {
+    const min = 1;
+    const max = 4;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private async navigateToCurrentTask(huntMeta: HuntMeta) {
+    const task = this.tasks[this.currentTaskIndex];
+    await this.router.navigate([`/tabs/hunt/${task}`], {
+      state: { huntMeta },
+    });
   }
 }
