@@ -18,7 +18,11 @@ export class DateTimePipe implements PipeTransform {
       const date = typeof value === 'string' ? new Date(value) : value;
       return this.formatDate(date, format);
     } else if (value && 'start' in value && 'end' in value) {
-      return this.calculateDuration(value.start, value.end);
+      if (value?.start && value?.end) {
+        return this.calculateDuration(value.start, value.end);
+      } else {
+        return '';
+      }
     } else {
       return '';
     }

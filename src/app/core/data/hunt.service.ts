@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { ScavengerHunt, HuntMeta } from '../../types/hunt.types';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -50,6 +49,8 @@ export class HuntService {
   async startHunt(name: string) {
     const huntMeta: HuntMeta = {
       name: name,
+      rewards: 0,
+      penalties: 0,
       time: { start: new Date() },
       date: new Date(),
     };
@@ -62,10 +63,18 @@ export class HuntService {
     await this.navigateToCurrentTask(huntMeta);
   }
 
-  async completeCurrentTask() {
+  async completeCurrentTask(taskStartTime: Date) {
     const huntMeta = await this.getCurrentHuntMeta();
     if (this.currentTaskIndex < this.tasks.length - 1) {
       this.currentTaskIndex++;
+      const taskEndTime = new Date();
+      const { rewards, penalties } = this.calculateRewardsAndPenalties(
+        taskStartTime,
+        taskEndTime,
+      );
+      huntMeta.rewards += rewards;
+      huntMeta.penalties += penalties;
+      await this.saveCurrentHuntMeta(huntMeta);
       await this.navigateToCurrentTask(huntMeta);
     } else {
       await this.completeHunt(huntMeta);
@@ -74,6 +83,7 @@ export class HuntService {
 
   async completeHunt(huntMeta: HuntMeta) {
     huntMeta.time.end = new Date();
+    await this.saveCurrentHuntMeta(huntMeta);
     await this.router.navigate(['/tabs/hunt/finish'], {
       state: { huntMeta: huntMeta },
     });
@@ -152,5 +162,25 @@ export class HuntService {
     await this.router.navigate([`/tabs/hunt/${task}`], {
       state: { huntMeta },
     });
+  }
+
+  calculateRewardsAndPenalties(
+    startTime: Date,
+    endTime: Date,
+  ): { rewards: number; penalties: number } {
+    const duration = (endTime.getTime() - startTime.getTime()) / 1000; // Duration in seconds
+    let rewards = 0;
+    let penalties = 0;
+
+    if (duration <= 15) {
+      rewards = 2;
+    } else if (duration <= 30) {
+      rewards = 1;
+    } else {
+      rewards = 1;
+      penalties = 1;
+    }
+
+    return { rewards, penalties };
   }
 }

@@ -35,6 +35,8 @@ import { FormsModule } from '@angular/forms';
 export class HuntPage implements OnInit, OnDestroy {
   protected huntStarted: boolean = false;
   protected huntMeta: HuntMeta = {
+    penalties: 0,
+    rewards: 0,
     name: '',
     time: {},
     date: new Date(),
@@ -98,15 +100,12 @@ export class HuntPage implements OnInit, OnDestroy {
   async resetHunt() {
     this.huntStarted = false;
     this.huntMeta = {
+      penalties: 0,
+      rewards: 0,
       name: '',
       time: {},
       date: new Date(),
     };
     await this.huntService.clearCurrentHuntMeta();
-  }
-
-  async endHunt() {
-    await this.resetHunt();
-    this.router.navigate(['/tabs/hunt']);
   }
 }

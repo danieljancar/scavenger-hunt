@@ -1,6 +1,6 @@
 export interface HuntTime {
-  start: Date;
-  end: Date;
+  start?: Date;
+  end?: Date;
 }
 
 export interface ScavengerHunt {
@@ -13,8 +13,8 @@ export interface ScavengerHunt {
 
 export interface HuntMeta {
   name: string;
-  rewards?: number;
-  penalties?: number;
+  rewards: number;
+  penalties: number;
   time: {
     start?: Date;
     end?: Date;

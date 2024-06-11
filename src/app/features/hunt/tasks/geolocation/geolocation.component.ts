@@ -40,6 +40,7 @@ export class GeolocationComponent implements OnInit {
   @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
   protected huntMeta!: HuntMeta;
   protected taskDone = true;
+  private taskStartTime!: Date;
 
   constructor(
     private huntService: HuntService,
@@ -50,6 +51,7 @@ export class GeolocationComponent implements OnInit {
 
   async ngOnInit() {
     this.huntMeta = await this.huntService.getCurrentHuntMeta();
+    this.taskStartTime = new Date();
   }
 
   onCancelHunt() {
@@ -62,6 +64,6 @@ export class GeolocationComponent implements OnInit {
 
   private async completeTask() {
     this.taskDone = true;
-    await this.huntService.completeCurrentTask();
+    await this.huntService.completeCurrentTask(this.taskStartTime);
   }
 }

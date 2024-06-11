@@ -1,11 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="discardHunt()"> Discard </ion-button>
+      <ion-button (click)="discardHunt()"> Discard</ion-button>
     </ion-buttons>
     <ion-title>{{ huntMeta?.name }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="saveHunt()"> Save </ion-button>
+      <ion-button (click)="saveHunt()"> Save</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -15,7 +15,28 @@
     <ion-label>
       <h2>Status</h2>
       <h1>Finished 🎉</h1>
-      <ion-list> rewards: fasf </ion-list>
+      <ion-list class="ion-padding ion-margin-top" lines="full">
+        <ion-item>
+          <ion-label slot="start">Rewards 🎖️</ion-label>
+          <ion-note slot="end">{{ huntMeta?.rewards }}</ion-note>
+        </ion-item>
+        <ion-item>
+          <ion-label slot="start">Penalties 🥔</ion-label>
+          <ion-note slot="end">{{ huntMeta?.penalties }}</ion-note>
+        </ion-item>
+        @if (huntMeta.time) {
+          <ion-item>
+            <ion-label slot="start">Time ⏱️</ion-label>
+            <ion-note slot="end">{{
+              huntMeta.time | dateTime: "huntTime"
+            }}</ion-note>
+          </ion-item>
+        }
+        <ion-item>
+          <ion-label slot="start">Date 📅</ion-label>
+          <ion-note slot="end">{{ huntMeta?.date | date }}</ion-note>
+        </ion-item>
+      </ion-list>
     </ion-label>
   </ion-item>
 
