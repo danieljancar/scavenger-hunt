@@ -51,7 +51,8 @@ export class GeolocationComponent implements OnInit {
     private taskStartTime!: Date
     private targetLatitude = 47.072007
     private targetLongitude = 8.348967
-    private proximityThreshold = 60 // In meters
+    private proximityThreshold = 5 // In meters
+    private watchPositionId: string | undefined
 
     constructor(
         private huntService: HuntService,
@@ -71,20 +72,30 @@ export class GeolocationComponent implements OnInit {
     startLocationChecks() {
         Geolocation.checkPermissions().then(async (status) => {
             if (status) {
-                const checkInterval = setInterval(async () => {
-                    const position = await Geolocation.getCurrentPosition()
-                    await this.checkProximity(position)
-                    if (this.taskDone) {
-                        clearInterval(checkInterval)
+                this.watchPositionId = await Geolocation.watchPosition(
+                    {
+                        enableHighAccuracy: true,
+                        maximumAge: 1000,
+                    },
+                    (position, error) => {
+                        if (error) {
+                            console.error(
+                                'Error while watching position:',
+                                error
+                            )
+                            return
+                        } else if (position) {
+                            this.checkProximity(position)
+                        }
                     }
-                }, 45)
+                )
             } else {
                 await this.presentPermissionDeniedAlert()
             }
         })
     }
 
-    async checkProximity(position: Position) {
+    checkProximity(position: Position) {
         const distance = this.calculateDistance(
             position.coords.latitude,
             position.coords.longitude,
@@ -92,8 +103,8 @@ export class GeolocationComponent implements OnInit {
             this.targetLongitude
         )
         if (distance <= this.proximityThreshold) {
-            await Haptics.vibrate({ duration: 1500 })
             this.taskDone = true
+            Haptics.vibrate({ duration: 1500 })
             this.changeDetectorRef.detectChanges()
         }
     }
@@ -137,10 +148,13 @@ export class GeolocationComponent implements OnInit {
             .then((a) => a.present())
     }
 
-    async onCancelHunt() {
+    onCancelHunt() {
         this.resetHunt.emit()
         this.huntService.currentTaskIndex = 0
         this.huntCommunicationService.cancelHunt()
+        if (this.watchPositionId) {
+            Geolocation.clearWatch({ id: this.watchPositionId })
+        }
     }
 
     async continueTask() {
