@@ -13,6 +13,7 @@ import {
   IonRefresherContent,
   IonSpinner,
   IonTitle,
+  IonToggle,
   IonToolbar,
   ToastController,
 } from '@ionic/angular/standalone';
@@ -21,6 +22,9 @@ import { DeviceInfo } from '../../types/device.types';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { StorageService } from '../../core/native/storage.service';
 import { FormatBytesPipe } from '../../pipes/format-bytes.pipe';
+import { FormsModule } from '@angular/forms';
+import { Geolocation } from '@capacitor/geolocation';
+import { Camera } from '@capacitor/camera';
 
 @Component({
   selector: 'app-settings',
@@ -43,6 +47,8 @@ import { FormatBytesPipe } from '../../pipes/format-bytes.pipe';
     FormatBytesPipe,
     IonRefresherContent,
     IonRefresher,
+    IonToggle,
+    FormsModule,
   ],
 })
 export class SettingsPage implements OnInit {
@@ -50,6 +56,8 @@ export class SettingsPage implements OnInit {
   protected storageUsage: number | null = null;
   protected isLoading = false;
   protected clearStorageButtonLoading = false;
+  protected geolocationPermission = false;
+  protected cameraPermission = false;
 
   constructor(
     private deviceService: DeviceService,
@@ -60,6 +68,7 @@ export class SettingsPage implements OnInit {
 
   async ngOnInit() {
     await this.loadDeviceInfo();
+    await this.checkPermissions();
   }
 
   async ionViewWillEnter() {
@@ -80,6 +89,26 @@ export class SettingsPage implements OnInit {
       .finally(() => {
         this.isLoading = false;
       });
+  }
+
+  async checkPermissions() {
+    const geolocationStatus = await Geolocation.checkPermissions();
+    const cameraStatus = await Camera.checkPermissions();
+
+    this.geolocationPermission = geolocationStatus.location === 'granted';
+    this.cameraPermission = cameraStatus.camera === 'granted';
+  }
+
+  async toggleGeolocationPermission() {
+    if (!this.geolocationPermission) {
+      await Geolocation.requestPermissions();
+    }
+  }
+
+  async toggleCameraPermission() {
+    if (!this.cameraPermission) {
+      await Camera.requestPermissions();
+    }
   }
 
   async clearStorage() {

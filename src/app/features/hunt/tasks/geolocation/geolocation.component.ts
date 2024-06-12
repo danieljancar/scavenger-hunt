@@ -58,35 +58,23 @@ export class GeolocationComponent implements OnInit {
   async ngOnInit() {
     this.huntMeta = await this.huntService.getCurrentHuntMeta();
     this.taskStartTime = new Date();
-    await this.checkLocationPermission();
-  }
-
-  async checkLocationPermission() {
-    const permissionStatus = await Geolocation.checkPermissions();
-    if (permissionStatus.location === 'granted') {
-      this.startLocationChecks();
-    } else {
-      await this.requestLocationPermission();
-    }
-  }
-
-  async requestLocationPermission() {
-    const permissionStatus = await Geolocation.requestPermissions();
-    if (permissionStatus.location === 'granted') {
-      this.startLocationChecks();
-    } else {
-      await this.presentPermissionDeniedAlert();
-    }
+    this.startLocationChecks();
   }
 
   startLocationChecks() {
-    const checkInterval = setInterval(async () => {
-      const position = await Geolocation.getCurrentPosition();
-      await this.checkProximity(position);
-      if (this.taskDone) {
-        clearInterval(checkInterval);
+    Geolocation.checkPermissions().then(async (status) => {
+      if (status) {
+        const checkInterval = setInterval(async () => {
+          const position = await Geolocation.getCurrentPosition();
+          await this.checkProximity(position);
+          if (this.taskDone) {
+            clearInterval(checkInterval);
+          }
+        }, 5000);
+      } else {
+        await this.presentPermissionDeniedAlert();
       }
-    }, 5000);
+    });
   }
 
   async checkProximity(position: Position) {
@@ -123,21 +111,22 @@ export class GeolocationComponent implements OnInit {
   }
 
   async presentPermissionDeniedAlert() {
-    const alert = await this.alertController.create({
-      header: 'Location Permission Required',
-      message:
-        'Please grant permission to access your device location to proceed with the hunt.',
-      buttons: [
-        {
-          text: 'Dismiss',
-          role: 'cancel',
-          handler: () => {
-            this.onCancelHunt();
+    await this.alertController
+      .create({
+        header: 'Location Permission Required',
+        message:
+          'Please grant permission to access your device location to proceed with the hunt.',
+        buttons: [
+          {
+            text: 'Dismiss',
+            role: 'cancel',
+            handler: () => {
+              this.onCancelHunt();
+            },
           },
-        },
-      ],
-    });
-    await alert.present();
+        ],
+      })
+      .then((a) => a.present());
   }
 
   async onCancelHunt() {

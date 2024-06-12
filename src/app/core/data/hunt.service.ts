@@ -215,8 +215,6 @@ export class HuntService {
     let penalties = 0;
 
     if (duration <= 15) {
-      rewards = 2;
-    } else if (duration <= 30) {
       rewards = 1;
     } else {
       rewards = 1;

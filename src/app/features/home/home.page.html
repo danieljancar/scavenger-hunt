@@ -17,7 +17,7 @@
   <ion-accordion-group expand="inset">
     @for (hunt of hunts; track hunt.name) {
     <ion-accordion [value]="hunt">
-      <ion-item slot="header" color="transparent">
+      <ion-item slot="header" color="transparent" lines="full">
         <ion-label>
           <h2>{{ hunt.name }}</h2>
         </ion-label>

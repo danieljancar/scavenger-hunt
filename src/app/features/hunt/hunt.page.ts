@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { HuntMeta } from '../../types/hunt.types';
 import { HuntCommunicationService } from '../../core/util/hunt-communication.service';
 import {
+  AlertController,
   IonButton,
   IonContent,
   IonHeader,
@@ -15,6 +16,9 @@ import {
   ToastController,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+import { Camera } from '@capacitor/camera';
+import { Geolocation } from '@capacitor/geolocation';
+import { AppLauncher } from '@capacitor/app-launcher';
 
 @Component({
   selector: 'app-hunt',
@@ -50,6 +54,7 @@ export class HuntPage implements OnInit, OnDestroy {
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
     private toastController: ToastController,
+    private alertController: AlertController,
   ) {}
 
   ngOnInit() {
@@ -76,21 +81,60 @@ export class HuntPage implements OnInit, OnDestroy {
   }
 
   async startHunt() {
-    if (!this.huntMeta.time) {
-      this.huntMeta.time = {};
+    let geolocationStatus = await Geolocation.requestPermissions({
+      permissions: ['location'],
+    });
+    let cameraStatus = await Camera.requestPermissions({
+      permissions: ['camera'],
+    });
+
+    if (
+      geolocationStatus.location !== 'granted' ||
+      cameraStatus.camera !== 'granted'
+    ) {
+      await this.alertController
+        .create({
+          header: 'Permissions Required',
+          message:
+            'Please allow access to your location and camera in your settings to start a hunt.',
+          buttons: [
+            {
+              text: 'OK',
+              role: 'cancel',
+              handler: () => {
+                this.resetHunt();
+              },
+            },
+            {
+              text: 'Go to Settings',
+              handler: () => {
+                AppLauncher.openUrl({ url: 'app-settings:root=General' }).then(
+                  () => {
+                    this.resetHunt();
+                  },
+                );
+              },
+            },
+          ],
+        })
+        .then((alert) => alert.present());
+    } else {
+      if (!this.huntMeta.time) {
+        this.huntMeta.time = {};
+      }
+      this.huntMeta.time.start = new Date();
+      this.huntMeta.date = new Date();
+
+      await this.huntService.saveCurrentHuntMeta(this.huntMeta);
+
+      this.router
+        .navigate(['/tabs/hunt/geolocation'], {
+          state: { huntMeta: this.huntMeta },
+        })
+        .then(() => {
+          this.huntStarted = true;
+        });
     }
-    this.huntMeta.time.start = new Date();
-    this.huntMeta.date = new Date();
-
-    await this.huntService.saveCurrentHuntMeta(this.huntMeta);
-
-    this.router
-      .navigate(['/tabs/hunt/geolocation'], {
-        state: { huntMeta: this.huntMeta },
-      })
-      .then(() => {
-        this.huntStarted = true;
-      });
   }
 
   async resetHunt() {

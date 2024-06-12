@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
+  AlertController,
   IonButton,
   IonButtons,
   IonContent,
@@ -23,6 +24,7 @@ import {
   CapacitorBarcodeScannerTypeHint,
 } from '@capacitor/barcode-scanner';
 import { Haptics } from '@capacitor/haptics';
+import { Camera } from '@capacitor/camera';
 
 @Component({
   selector: 'app-qrcode',
@@ -52,6 +54,7 @@ export class QrcodeComponent implements OnInit {
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
     private toastController: ToastController,
+    private alertController: AlertController,
   ) {
     addIcons({ cameraOutline });
   }
@@ -62,45 +65,70 @@ export class QrcodeComponent implements OnInit {
   }
 
   async startScan() {
-    try {
-      const result = await CapacitorBarcodeScanner.scanBarcode({
-        hint: CapacitorBarcodeScannerTypeHint.ALL,
-        scanInstructions: 'Please scan the QR code',
-        scanButton: false,
-        scanText: 'Scan',
-        cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
-        scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
-        web: {
-          showCameraSelection: true,
-          scannerFPS: 30,
-        },
-      });
+    Camera.checkPermissions().then(async (status) => {
+      if (status) {
+        try {
+          const result = await CapacitorBarcodeScanner.scanBarcode({
+            hint: CapacitorBarcodeScannerTypeHint.QR_CODE,
+            scanInstructions: 'Please scan the QR code',
+            scanButton: false,
+            scanText: 'Scan',
+            cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
+            scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
+            web: {
+              showCameraSelection: true,
+              scannerFPS: 30,
+            },
+          });
 
-      if (result.ScanResult === 'M335@ICT-BZ') {
-        await Haptics.vibrate({ duration: 1500 }).then(() => {
-          this.taskDone = true;
-        });
+          if (result.ScanResult === 'M335@ICT-BZ') {
+            await Haptics.vibrate({ duration: 1500 }).then(() => {
+              this.taskDone = true;
+            });
+          } else {
+            await this.toastController
+              .create({
+                message: 'Wrong QR code scanned, try again!',
+                duration: 2000,
+                color: 'warning',
+                position: 'top',
+              })
+              .then((t) => t.present());
+          }
+        } catch (error) {
+          console.error('Error scanning QR code', error);
+          await this.toastController
+            .create({
+              message: 'Error scanning QR code, try again.',
+              duration: 2000,
+              color: 'danger',
+              position: 'top',
+            })
+            .then((t) => t.present());
+        }
       } else {
-        await this.toastController
-          .create({
-            message: 'Wrong QR code scanned, try again!',
-            duration: 2000,
-            color: 'warning',
-            position: 'top',
-          })
-          .then((t) => t.present());
+        await this.presentPermissionDeniedAlert();
       }
-    } catch (error) {
-      console.error('Error scanning QR code', error);
-      await this.toastController
-        .create({
-          message: 'Error scanning QR code, try again.',
-          duration: 2000,
-          color: 'danger',
-          position: 'top',
-        })
-        .then((t) => t.present());
-    }
+    });
+  }
+
+  async presentPermissionDeniedAlert() {
+    await this.alertController
+      .create({
+        header: 'Camera Permission Required',
+        message:
+          'Please allow access to your camera in your settings to scan the QR code.',
+        buttons: [
+          {
+            text: 'Dismiss',
+            role: 'cancel',
+            handler: () => {
+              this.onCancelHunt();
+            },
+          },
+        ],
+      })
+      .then((a) => a.present());
   }
 
   onCancelHunt() {
@@ -113,7 +141,7 @@ export class QrcodeComponent implements OnInit {
     await this.completeTask();
   }
 
-  private async completeTask() {
+  async completeTask() {
     this.taskDone = true;
     await this.huntService.completeCurrentTask(this.taskStartTime);
   }

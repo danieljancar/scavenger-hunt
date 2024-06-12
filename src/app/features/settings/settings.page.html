@@ -11,9 +11,32 @@
     </ion-toolbar>
   </ion-header>
 
-  @if (isLoading) {
+  @if (!isLoading) {
+  <ion-note class="ion-padding-horizontal ion-margin-top"> Access </ion-note>
+  <ion-list [inset]="true" lines="full">
+    <ion-item>
+      <ion-label slot="start">Geolocation</ion-label>
+      <ion-toggle
+        disabled
+        slot="end"
+        [(ngModel)]="geolocationPermission"
+        (ionChange)="toggleGeolocationPermission()"
+      ></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label slot="start">Camera</ion-label>
+      <ion-toggle
+        disabled
+        slot="end"
+        [(ngModel)]="cameraPermission"
+        (ionChange)="toggleCameraPermission()"
+      ></ion-toggle>
+    </ion-item>
+  </ion-list>
+  } @if (isLoading) {
   <app-loading />
   } @else if (deviceInfo) {
+  <ion-note class="ion-padding-horizontal"> Device </ion-note>
   <ion-list [inset]="true" lines="full">
     @if (deviceInfo.name) {
     <ion-item>
@@ -41,6 +64,7 @@
     </ion-item>
   </ion-list>
 
+  <ion-note class="ion-padding-horizontal"> Memory </ion-note>
   <ion-list [inset]="true" lines="full">
     @if (deviceInfo.memUsed) {
     <ion-item>
@@ -72,6 +96,7 @@
     }
   </ion-list>
   } @if (storageUsage !== null) {
+  <ion-note class="ion-padding-horizontal"> Storage </ion-note>
   <ion-list [inset]="true" lines="full">
     <ion-item>
       <ion-label slot="start">Storage Usage</ion-label>
