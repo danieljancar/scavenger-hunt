@@ -41,11 +41,11 @@ import { Haptics } from '@capacitor/haptics';
 export class GeolocationComponent implements OnInit {
   @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
   protected huntMeta!: HuntMeta;
-  protected taskDone = true;
+  protected taskDone = false;
   private taskStartTime!: Date;
   private targetLatitude = 47.072007;
   private targetLongitude = 8.348967;
-  private proximityThreshold = 50; // In meters
+  private proximityThreshold = 30; // In meters
 
   constructor(
     private huntService: HuntService,
@@ -64,7 +64,7 @@ export class GeolocationComponent implements OnInit {
   async checkLocationPermission() {
     const permissionStatus = await Geolocation.checkPermissions();
     if (permissionStatus.location === 'granted') {
-      await this.getCurrentLocation();
+      this.startLocationChecks();
     } else {
       await this.requestLocationPermission();
     }
@@ -73,15 +73,20 @@ export class GeolocationComponent implements OnInit {
   async requestLocationPermission() {
     const permissionStatus = await Geolocation.requestPermissions();
     if (permissionStatus.location === 'granted') {
-      await this.getCurrentLocation();
+      this.startLocationChecks();
     } else {
       await this.presentPermissionDeniedAlert();
     }
   }
 
-  async getCurrentLocation() {
-    const position = await Geolocation.getCurrentPosition();
-    await this.checkProximity(position);
+  startLocationChecks() {
+    const checkInterval = setInterval(async () => {
+      const position = await Geolocation.getCurrentPosition();
+      await this.checkProximity(position);
+      if (this.taskDone) {
+        clearInterval(checkInterval);
+      }
+    }, 5000);
   }
 
   async checkProximity(position: Position) {
@@ -92,9 +97,8 @@ export class GeolocationComponent implements OnInit {
       this.targetLongitude,
     );
     if (distance <= this.proximityThreshold) {
-      await Haptics.vibrate().then(() => {
-        this.taskDone = true;
-      });
+      await Haptics.vibrate({ duration: 1500 });
+      this.taskDone = true;
     }
   }
 
@@ -104,7 +108,6 @@ export class GeolocationComponent implements OnInit {
     lat2: number,
     lon2: number,
   ): number {
-    // Formula based on: https://henry-rossiter.medium.com/calculating-distance-between-geographic-coordinates-with-javascript-5f3097b61898
     const R = 6371e3; // Earth radius in meters
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
