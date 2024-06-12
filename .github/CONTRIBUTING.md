@@ -1,6 +1,6 @@
-# Contributing to Soccer Fields
+# Contributing to Scavenger Hunt
 
-Thank you for your interest in contributing to Soccer Fields. To ensure a smooth contribution process and maintain the quality
+Thank you for your interest in contributing to Scavenger Hunt. To ensure a smooth contribution process and maintain the quality
 of our codebase, we have set specific guidelines, especially for commit messages and versioning.
 
 ## Semantic Release and Commit Message Guidelines
@@ -71,5 +71,5 @@ BREAKING CHANGE: Users can no longer log in using their email address. Instead, 
 - **Categorize with Labels**: Use appropriate labels like `bug`, `feature`, `documentation`, `help wanted` to help
   categorize and prioritize the issue.
 
-Your contributions are vital to keeping Soccer Fields robust and reliable. By following these guidelines, we can ensure a
+Your contributions are vital to keeping Scavenger Hunt robust and reliable. By following these guidelines, we can ensure a
 smooth and efficient development process. Thank you for your contributions!
