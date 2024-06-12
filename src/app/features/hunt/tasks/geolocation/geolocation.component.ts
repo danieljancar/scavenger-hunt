@@ -77,7 +77,7 @@ export class GeolocationComponent implements OnInit {
           if (this.taskDone) {
             clearInterval(checkInterval);
           }
-        }, 5000);
+        }, 1500);
       } else {
         await this.presentPermissionDeniedAlert();
       }

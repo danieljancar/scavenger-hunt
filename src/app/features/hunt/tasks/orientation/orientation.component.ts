@@ -23,7 +23,6 @@ import {
 } from '@ionic/angular/standalone';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Haptics } from '@capacitor/haptics';
-import { ChangeDetection } from '@angular/cli/lib/config/workspace-schema';
 
 @Component({
   selector: 'app-orientation',
