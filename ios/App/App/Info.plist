@@ -38,5 +38,7 @@
 	<true/>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>ScavengerHunt uses your location, to support location oriented hunts.</string>
+  <key>NSCameraUsageDescription</key>
+  <string>ScavengerHunt uses your camera, to support augmented reality hunts with QR-Codes.</string>
 </dict>
 </plist>

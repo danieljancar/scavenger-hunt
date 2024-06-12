@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button (click)="onCancelHunt()"> Cancel </ion-button>
+      <ion-button (click)="onCancelHunt()"> Cancel</ion-button>
     </ion-buttons>
     <ion-title>{{ huntMeta?.name }}</ion-title>
     <ion-buttons slot="end">
@@ -23,6 +23,9 @@
       </p>
     </ion-label>
   </ion-item>
+  <ion-button expand="block" class="ion-padding-vertical" (click)="startScan()">
+    Scan QR Code
+  </ion-button>
 
   <ion-label class="ion-justify-content-center task-icon__container">
     <ion-icon name="camera-outline"></ion-icon>

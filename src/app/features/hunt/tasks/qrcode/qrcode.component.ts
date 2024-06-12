@@ -14,7 +14,14 @@ import { HuntMeta } from '../../../../types/hunt.types';
 import { HuntService } from '../../../../core/data/hunt.service';
 import { HuntCommunicationService } from '../../../../core/util/hunt-communication.service';
 import { addIcons } from 'ionicons';
-import { cameraOutline, locationOutline } from 'ionicons/icons';
+import { cameraOutline } from 'ionicons/icons';
+import {
+  CapacitorBarcodeScanner,
+  CapacitorBarcodeScannerCameraDirection,
+  CapacitorBarcodeScannerScanOrientation,
+  CapacitorBarcodeScannerTypeHint,
+} from '@capacitor/barcode-scanner';
+import { Haptics } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-qrcode',
@@ -32,11 +39,12 @@ import { cameraOutline, locationOutline } from 'ionicons/icons';
     IonTitle,
     IonToolbar,
   ],
+  providers: [CapacitorBarcodeScanner],
 })
 export class QrcodeComponent implements OnInit {
   @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
   protected huntMeta!: HuntMeta;
-  protected taskDone = true;
+  protected taskDone = false;
   private taskStartTime!: Date;
 
   constructor(
@@ -49,6 +57,31 @@ export class QrcodeComponent implements OnInit {
   async ngOnInit() {
     this.huntMeta = await this.huntService.getCurrentHuntMeta();
     this.taskStartTime = new Date();
+  }
+
+  async startScan() {
+    try {
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: CapacitorBarcodeScannerTypeHint.ALL,
+        scanInstructions: 'Please scan the QR code',
+        scanButton: false,
+        scanText: 'Scan',
+        cameraDirection: CapacitorBarcodeScannerCameraDirection.BACK,
+        scanOrientation: CapacitorBarcodeScannerScanOrientation.ADAPTIVE,
+        web: {
+          showCameraSelection: true,
+          scannerFPS: 30,
+        },
+      });
+
+      if (result.ScanResult === 'nicht M335@ICT-BZ') {
+        this.taskDone = true;
+        await Haptics.vibrate();
+      }
+      console.log(result);
+    } catch (error) {
+      console.error('Scan failed', error);
+    }
   }
 
   onCancelHunt() {

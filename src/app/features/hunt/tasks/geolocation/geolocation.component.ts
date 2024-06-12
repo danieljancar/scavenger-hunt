@@ -18,7 +18,7 @@ import { addIcons } from 'ionicons';
 import { locationOutline } from 'ionicons/icons';
 import { HuntCommunicationService } from '../../../../core/util/hunt-communication.service';
 import { Geolocation, Position } from '@capacitor/geolocation';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-geolocation',
