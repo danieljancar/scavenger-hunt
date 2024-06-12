@@ -41,10 +41,10 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 export class GeolocationComponent implements OnInit {
   @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
   protected huntMeta!: HuntMeta;
-  protected taskDone = false;
+  protected taskDone = true;
   private taskStartTime!: Date;
-  private targetLatitude = 47.173995;
-  private targetLongitude = 8.093872;
+  private targetLatitude = 47.072007;
+  private targetLongitude = 8.348967;
   private proximityThreshold = 50; // In meters
 
   constructor(
