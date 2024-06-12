@@ -2,6 +2,7 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
+    OnDestroy,
     OnInit,
     Output,
 } from '@angular/core'
@@ -44,14 +45,14 @@ import { Haptics } from '@capacitor/haptics'
         IonButtons,
     ],
 })
-export class GeolocationComponent implements OnInit {
+export class GeolocationComponent implements OnInit, OnDestroy {
     @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>()
     protected huntMeta!: HuntMeta
     protected taskDone = false
     private taskStartTime!: Date
     private targetLatitude = 47.072007
     private targetLongitude = 8.348967
-    private proximityThreshold = 5 // In meters
+    private proximityThreshold = 10 // In meters
     private watchPositionId: string | undefined
 
     constructor(
@@ -160,6 +161,12 @@ export class GeolocationComponent implements OnInit {
     async continueTask() {
         if (this.taskDone) {
             await this.completeTask()
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.watchPositionId) {
+            Geolocation.clearWatch({ id: this.watchPositionId })
         }
     }
 
