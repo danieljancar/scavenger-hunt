@@ -1,27 +1,27 @@
-import { Injectable } from '@angular/core';
-import { Preferences } from '@capacitor/preferences';
+import { Injectable } from '@angular/core'
+import { Preferences } from '@capacitor/preferences'
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class StorageService {
-  constructor() {}
+    constructor() {}
 
-  public async getStorageUsage() {
-    const { keys } = await Preferences.keys();
-    let totalSize = 0;
+    public async getStorageUsage() {
+        const { keys } = await Preferences.keys()
+        let totalSize = 0
 
-    for (const key of keys) {
-      const { value } = await Preferences.get({ key });
-      if (value !== null) {
-        totalSize += new Blob([value]).size;
-      }
+        for (const key of keys) {
+            const { value } = await Preferences.get({ key })
+            if (value !== null) {
+                totalSize += new Blob([value]).size
+            }
+        }
+
+        return totalSize
     }
 
-    return totalSize;
-  }
-
-  public async clearStorage() {
-    await Preferences.clear();
-  }
+    public async clearStorage() {
+        await Preferences.clear()
+    }
 }

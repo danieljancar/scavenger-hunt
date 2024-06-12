@@ -1,76 +1,86 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title> Leaderboard</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title> Leaderboard</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding-bottom">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Leaderboard</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">Leaderboard</ion-title>
+        </ion-toolbar>
+    </ion-header>
 
-  @if (isLoading) {
-  <app-loading />
-  } @else { @if (hunts.length > 0) {
-  <ion-accordion-group expand="inset">
-    @for (hunt of hunts; track hunt.name) {
-    <ion-accordion [value]="hunt">
-      <ion-item slot="header" color="transparent">
-        <ion-label>
-          <h2>{{ hunt.name }}</h2>
-        </ion-label>
-      </ion-item>
-      <div slot="content" class="ion-padding">
-        <ion-list lines="full" [inset]="true">
-          <ion-item>
-            <ion-icon name="medal-outline" slot="start"></ion-icon>
-            <ion-label slot="start">Rewards</ion-label>
-            <ion-note slot="end">{{ hunt.rewards }}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="skull-outline" slot="start"></ion-icon>
-            <ion-label slot="start">Penalties</ion-label>
-            <ion-note slot="end">{{ hunt.penalties }}</ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="stopwatch-outline" slot="start"></ion-icon>
-            <ion-label slot="start">Time</ion-label>
-            <ion-note slot="end"
-              >{{ hunt.time | dateTime:'huntTime' }}
-            </ion-note>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="calendar-outline" slot="start"></ion-icon>
-            <ion-label slot="start">Date</ion-label>
-            <ion-note slot="end"
-              >{{ hunt.date | dateTime:'relative' }}
-            </ion-note>
-          </ion-item>
-        </ion-list>
-        <div class="action__container">
-          <ion-button fill="clear" color="danger" (click)="deleteHunt($index)">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
-        </div>
-      </div>
-    </ion-accordion>
-    }
-  </ion-accordion-group>
-  } @else {
-  <app-feedback
-    [icon]="FeedbackIcon.ERROR"
-    title="No hunts available"
-    message="Please add some scavenger hunts to get started"
-  />
-  <ion-button
-    class="ion-padding-horizontal"
-    expand="block"
-    fill="outline"
-    (click)="addSamples()"
-  >
-    Add samples
-  </ion-button>
-  } }
+    @if (isLoading) {
+    <app-loading />
+    } @else { @if (hunts.length > 0) {
+    <ion-accordion-group expand="inset">
+        @for (hunt of hunts; track hunt.name) {
+        <ion-accordion [value]="hunt">
+            <ion-item slot="header" color="transparent" lines="full">
+                <ion-label>
+                    <h2>{{ hunt.name }}</h2>
+                </ion-label>
+            </ion-item>
+            <div slot="content" class="ion-padding">
+                <ion-list lines="full" [inset]="true">
+                    <ion-item>
+                        <ion-icon name="medal-outline" slot="start"></ion-icon>
+                        <ion-label slot="start">Rewards</ion-label>
+                        <ion-note slot="end">{{ hunt.rewards }}</ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon name="skull-outline" slot="start"></ion-icon>
+                        <ion-label slot="start">Penalties</ion-label>
+                        <ion-note slot="end">{{ hunt.penalties }}</ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon
+                            name="stopwatch-outline"
+                            slot="start"
+                        ></ion-icon>
+                        <ion-label slot="start">Time</ion-label>
+                        <ion-note slot="end"
+                            >{{ hunt.time | dateTime:'huntTime' }}
+                        </ion-note>
+                    </ion-item>
+                    <ion-item>
+                        <ion-icon
+                            name="calendar-outline"
+                            slot="start"
+                        ></ion-icon>
+                        <ion-label slot="start">Date</ion-label>
+                        <ion-note slot="end"
+                            >{{ hunt.date | dateTime:'relative' }}
+                        </ion-note>
+                    </ion-item>
+                </ion-list>
+                <div class="action__container">
+                    <ion-button
+                        fill="clear"
+                        color="danger"
+                        (click)="deleteHunt($index)"
+                    >
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+        </ion-accordion>
+        }
+    </ion-accordion-group>
+    } @else {
+    <app-feedback
+        [icon]="FeedbackIcon.ERROR"
+        title="No hunts available"
+        message="Please add some scavenger hunts to get started"
+    />
+    <ion-button
+        class="ion-padding-horizontal"
+        expand="block"
+        fill="outline"
+        (click)="addSamples()"
+    >
+        Add samples
+    </ion-button>
+    } }
 </ion-content>

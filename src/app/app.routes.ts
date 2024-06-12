@@ -1,9 +1,9 @@
-import { Routes } from '@angular/router';
+import { Routes } from '@angular/router'
 
 export const routes: Routes = [
-  {
-    path: '',
-    loadChildren: () =>
-      import('./shared/tabs/tabs.routes').then((m) => m.routes),
-  },
-];
+    {
+        path: '',
+        loadChildren: () =>
+            import('./shared/tabs/tabs.routes').then((m) => m.routes),
+    },
+]
