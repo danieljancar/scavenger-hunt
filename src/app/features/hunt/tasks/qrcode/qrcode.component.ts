@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   AlertController,
   IonButton,
@@ -55,6 +61,7 @@ export class QrcodeComponent implements OnInit {
     private huntCommunicationService: HuntCommunicationService,
     private toastController: ToastController,
     private alertController: AlertController,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     addIcons({ cameraOutline });
   }
@@ -84,6 +91,7 @@ export class QrcodeComponent implements OnInit {
           if (result.ScanResult === 'M335@ICT-BZ') {
             await Haptics.vibrate({ duration: 1500 }).then(() => {
               this.taskDone = true;
+              this.changeDetectorRef.detectChanges();
             });
           } else {
             await this.toastController

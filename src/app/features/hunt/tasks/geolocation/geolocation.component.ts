@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { HuntMeta } from '../../../../types/hunt.types';
 import {
   AlertController,
@@ -45,12 +51,13 @@ export class GeolocationComponent implements OnInit {
   private taskStartTime!: Date;
   private targetLatitude = 47.072007;
   private targetLongitude = 8.348967;
-  private proximityThreshold = 30; // In meters
+  private proximityThreshold = 60; // In meters
 
   constructor(
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
     private alertController: AlertController,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     addIcons({ locationOutline });
   }
@@ -87,6 +94,7 @@ export class GeolocationComponent implements OnInit {
     if (distance <= this.proximityThreshold) {
       await Haptics.vibrate({ duration: 1500 });
       this.taskDone = true;
+      this.changeDetectorRef.detectChanges();
     }
   }
 
