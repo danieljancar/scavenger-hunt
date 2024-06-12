@@ -13,6 +13,13 @@ export class HuntService {
   private readonly HUNTS_KEY = 'hunts';
   private readonly CURRENT_HUNT_KEY = 'currentHunt';
   private readonly tasks = ['geolocation', 'qrcode', 'orientation', 'charge'];
+  private huntSampleNames = [
+    'Eagle Eye',
+    'Night Hawk',
+    'Lion Heart',
+    'Shadow Fox',
+    'Silver Serpent',
+  ];
 
   constructor(
     private router: Router,
@@ -188,36 +195,9 @@ export class HuntService {
 
   addSamples(): Promise<void> {
     return this.saveHunts([
-      {
-        name: 'Scavenger Hunt 1',
-        rewards: this.randomNum(),
-        penalties: this.randomNum(),
-        time: {
-          start: new Date(),
-          end: new Date(),
-        },
-        date: new Date(),
-      },
-      {
-        name: 'Scavenger Hunt 2',
-        rewards: this.randomNum(),
-        penalties: this.randomNum(),
-        time: {
-          start: new Date(),
-          end: new Date(),
-        },
-        date: new Date(),
-      },
-      {
-        name: 'Scavenger Hunt 3',
-        rewards: this.randomNum(),
-        penalties: this.randomNum(),
-        time: {
-          start: new Date(),
-          end: new Date(),
-        },
-        date: new Date(),
-      },
+      this.createRandomHunt(),
+      this.createRandomHunt(),
+      this.createRandomHunt(),
     ]);
   }
 
@@ -241,9 +221,7 @@ export class HuntService {
     return { rewards, penalties };
   }
 
-  private randomNum(): number {
-    const min = 1;
-    const max = 4;
+  private randomNum(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
@@ -252,5 +230,24 @@ export class HuntService {
     await this.router.navigate([`/tabs/hunt/${task}`], {
       state: { huntMeta },
     });
+  }
+
+  private createRandomHunt(): ScavengerHunt {
+    const randomName =
+      this.huntSampleNames[this.randomNum(0, this.huntSampleNames.length - 1)];
+    const startTime = new Date();
+    const endTime = new Date(
+      startTime.getTime() + this.randomNum(1, 10) * 1000,
+    );
+    return {
+      name: randomName,
+      rewards: this.randomNum(1, 10),
+      penalties: this.randomNum(1, 10),
+      time: {
+        start: startTime,
+        end: endTime,
+      },
+      date: startTime,
+    };
   }
 }
