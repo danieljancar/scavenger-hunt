@@ -1,117 +1,123 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Settings</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>Settings</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding-bottom" color="light">
-  <ion-header collapse="condense">
-    <ion-toolbar color="light">
-      <ion-title size="large">Settings</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <ion-header collapse="condense">
+        <ion-toolbar color="light">
+            <ion-title size="large">Settings</ion-title>
+        </ion-toolbar>
+    </ion-header>
 
-  @if (!isLoading) {
-  <ion-note class="ion-padding-horizontal ion-margin-top"> Access </ion-note>
-  <ion-list [inset]="true" lines="full">
-    <ion-item>
-      <ion-label slot="start">Geolocation</ion-label>
-      <ion-toggle
-        disabled
-        slot="end"
-        [(ngModel)]="geolocationPermission"
-        (ionChange)="toggleGeolocationPermission()"
-      ></ion-toggle>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">Camera</ion-label>
-      <ion-toggle
-        disabled
-        slot="end"
-        [(ngModel)]="cameraPermission"
-        (ionChange)="toggleCameraPermission()"
-      ></ion-toggle>
-    </ion-item>
-  </ion-list>
-  } @if (isLoading) {
-  <app-loading />
-  } @else if (deviceInfo) {
-  <ion-note class="ion-padding-horizontal"> Device </ion-note>
-  <ion-list [inset]="true" lines="full">
-    @if (deviceInfo.name) {
-    <ion-item>
-      <ion-label slot="start">Name</ion-label>
-      <ion-note slot="end">{{ deviceInfo.name }}</ion-note>
-    </ion-item>
-    }
-    <ion-item>
-      <ion-label slot="start">Platform</ion-label>
-      <ion-note slot="end">{{ deviceInfo.model }}</ion-note>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">Operating System</ion-label>
-      <ion-note slot="end">{{ deviceInfo.operatingSystem }}</ion-note>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">Version</ion-label>
-      <ion-note slot="end"
-        >{{ deviceInfo.osVersion || deviceInfo.iosVersion }}
-      </ion-note>
-    </ion-item>
-    <ion-item>
-      <ion-label slot="start">Manufacturer</ion-label>
-      <ion-note slot="end">{{ deviceInfo.manufacturer }}</ion-note>
-    </ion-item>
-  </ion-list>
+    @if (!isLoading) {
+    <ion-note class="ion-padding-horizontal ion-margin-top"> Access </ion-note>
+    <ion-list [inset]="true" lines="full">
+        <ion-item>
+            <ion-label slot="start">Geolocation</ion-label>
+            <ion-toggle
+                disabled
+                slot="end"
+                [(ngModel)]="geolocationPermission"
+                (ionChange)="toggleGeolocationPermission()"
+            ></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <ion-label slot="start">Camera</ion-label>
+            <ion-toggle
+                disabled
+                slot="end"
+                [(ngModel)]="cameraPermission"
+                (ionChange)="toggleCameraPermission()"
+            ></ion-toggle>
+        </ion-item>
+    </ion-list>
+    } @if (isLoading) {
+    <app-loading />
+    } @else if (deviceInfo) {
+    <ion-note class="ion-padding-horizontal"> Device </ion-note>
+    <ion-list [inset]="true" lines="full">
+        @if (deviceInfo.name) {
+        <ion-item>
+            <ion-label slot="start">Name</ion-label>
+            <ion-note slot="end">{{ deviceInfo.name }}</ion-note>
+        </ion-item>
+        }
+        <ion-item>
+            <ion-label slot="start">Platform</ion-label>
+            <ion-note slot="end">{{ deviceInfo.model }}</ion-note>
+        </ion-item>
+        <ion-item>
+            <ion-label slot="start">Operating System</ion-label>
+            <ion-note slot="end">{{ deviceInfo.operatingSystem }}</ion-note>
+        </ion-item>
+        <ion-item>
+            <ion-label slot="start">Version</ion-label>
+            <ion-note slot="end"
+                >{{ deviceInfo.osVersion || deviceInfo.iosVersion }}
+            </ion-note>
+        </ion-item>
+        <ion-item>
+            <ion-label slot="start">Manufacturer</ion-label>
+            <ion-note slot="end">{{ deviceInfo.manufacturer }}</ion-note>
+        </ion-item>
+    </ion-list>
 
-  <ion-note class="ion-padding-horizontal"> Memory </ion-note>
-  <ion-list [inset]="true" lines="full">
-    @if (deviceInfo.memUsed) {
-    <ion-item>
-      <ion-label slot="start">Memory Usage</ion-label>
-      <ion-note slot="end">{{ deviceInfo.memUsed | formatBytes }}</ion-note>
-    </ion-item>
-    } @if (deviceInfo.diskFree) {
-    <ion-item>
-      <ion-label slot="start">Disk Free</ion-label>
-      <ion-note slot="end">{{ deviceInfo.diskFree | formatBytes }}</ion-note>
-    </ion-item>
-    } @if (deviceInfo.diskTotal) {
-    <ion-item>
-      <ion-label slot="start">Disk Total</ion-label>
-      <ion-note slot="end">{{ deviceInfo.diskTotal | formatBytes }}</ion-note>
-    </ion-item>
-    } @if (deviceInfo.realDiskFree) {
-    <ion-item>
-      <ion-label slot="start">Real Disk Free</ion-label>
-      <ion-note slot="end"
-        >{{ deviceInfo.realDiskFree | formatBytes }}
-      </ion-note>
-    </ion-item>
-    } @if (deviceInfo.webviewVersion) {
-    <ion-item>
-      <ion-label slot="start">Webview Version</ion-label>
-      <ion-note slot="end">{{ deviceInfo.webviewVersion }}</ion-note>
-    </ion-item>
+    <ion-note class="ion-padding-horizontal"> Memory </ion-note>
+    <ion-list [inset]="true" lines="full">
+        @if (deviceInfo.memUsed) {
+        <ion-item>
+            <ion-label slot="start">Memory Usage</ion-label>
+            <ion-note slot="end"
+                >{{ deviceInfo.memUsed | formatBytes }}</ion-note
+            >
+        </ion-item>
+        } @if (deviceInfo.diskFree) {
+        <ion-item>
+            <ion-label slot="start">Disk Free</ion-label>
+            <ion-note slot="end"
+                >{{ deviceInfo.diskFree | formatBytes }}</ion-note
+            >
+        </ion-item>
+        } @if (deviceInfo.diskTotal) {
+        <ion-item>
+            <ion-label slot="start">Disk Total</ion-label>
+            <ion-note slot="end"
+                >{{ deviceInfo.diskTotal | formatBytes }}</ion-note
+            >
+        </ion-item>
+        } @if (deviceInfo.realDiskFree) {
+        <ion-item>
+            <ion-label slot="start">Real Disk Free</ion-label>
+            <ion-note slot="end"
+                >{{ deviceInfo.realDiskFree | formatBytes }}
+            </ion-note>
+        </ion-item>
+        } @if (deviceInfo.webviewVersion) {
+        <ion-item>
+            <ion-label slot="start">Webview Version</ion-label>
+            <ion-note slot="end">{{ deviceInfo.webviewVersion }}</ion-note>
+        </ion-item>
+        }
+    </ion-list>
+    } @if (storageUsage !== null) {
+    <ion-note class="ion-padding-horizontal"> Storage </ion-note>
+    <ion-list [inset]="true" lines="full">
+        <ion-item>
+            <ion-label slot="start">Storage Usage</ion-label>
+            <ion-note slot="end">{{ storageUsage | formatBytes }}</ion-note>
+        </ion-item>
+    </ion-list>
     }
-  </ion-list>
-  } @if (storageUsage !== null) {
-  <ion-note class="ion-padding-horizontal"> Storage </ion-note>
-  <ion-list [inset]="true" lines="full">
-    <ion-item>
-      <ion-label slot="start">Storage Usage</ion-label>
-      <ion-note slot="end">{{ storageUsage | formatBytes }}</ion-note>
-    </ion-item>
-  </ion-list>
-  }
-  <ion-button
-    [disabled]="clearStorageButtonLoading || storageUsage === 0"
-    fill="outline"
-    color="primary"
-    class="ion-padding-horizontal"
-    expand="block"
-    (click)="clearStorage()"
-  >
-    Clear Storage
-  </ion-button>
+    <ion-button
+        [disabled]="clearStorageButtonLoading || storageUsage === 0"
+        fill="outline"
+        color="primary"
+        class="ion-padding-horizontal"
+        expand="block"
+        (click)="clearStorage()"
+    >
+        Clear Storage
+    </ion-button>
 </ion-content>

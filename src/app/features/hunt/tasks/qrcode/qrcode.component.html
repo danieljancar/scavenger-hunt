@@ -1,38 +1,38 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="onCancelHunt()"> Cancel</ion-button>
-    </ion-buttons>
-    <ion-title>{{ huntMeta?.name }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button [disabled]="!taskDone" (click)="continueTask()">
-        Continue
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="onCancelHunt()"> Cancel</ion-button>
+        </ion-buttons>
+        <ion-title>{{ huntMeta?.name }}</ion-title>
+        <ion-buttons slot="end">
+            <ion-button [disabled]="!taskDone" (click)="continueTask()">
+                Continue
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-item class="ion-margin-vertical" lines="none">
-    <ion-label>
-      <h2>Task 2</h2>
-      <h1>Kamera - QR Code</h1>
-      <p>
-        Scan the QR code that will be compared with a word to unlock the next
-        task.
-      </p>
-    </ion-label>
-  </ion-item>
-  <ion-button
-    [disabled]="taskDone"
-    expand="block"
-    class="ion-padding-vertical"
-    (click)="startScan()"
-  >
-    Scan QR Code
-  </ion-button>
+    <ion-item class="ion-margin-vertical" lines="none">
+        <ion-label>
+            <h2>Task 2</h2>
+            <h1>Kamera - QR Code</h1>
+            <p>
+                Scan the QR code that will be compared with a word to unlock the
+                next task.
+            </p>
+        </ion-label>
+    </ion-item>
+    <ion-button
+        [disabled]="taskDone"
+        expand="block"
+        class="ion-padding-vertical"
+        (click)="startScan()"
+    >
+        Scan QR Code
+    </ion-button>
 
-  <ion-label class="ion-justify-content-center task-icon__container">
-    <ion-icon name="camera-outline"></ion-icon>
-  </ion-label>
+    <ion-label class="ion-justify-content-center task-icon__container">
+        <ion-icon name="camera-outline"></ion-icon>
+    </ion-label>
 </ion-content>

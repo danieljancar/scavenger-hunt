@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, Input } from '@angular/core'
+import { IonicModule } from '@ionic/angular'
 
 /**
  * Loading component
@@ -8,15 +8,15 @@ import { IonicModule } from '@ionic/angular';
  * <app-loading icon="dots" title="Loading" message="Please wait..."></app-loading>
  */
 @Component({
-  selector: 'app-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss'],
-  imports: [IonicModule],
-  standalone: true,
+    selector: 'app-loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.scss'],
+    imports: [IonicModule],
+    standalone: true,
 })
 export class LoadingComponent {
-  @Input() title: string | undefined;
-  @Input() message: string | undefined;
+    @Input() title: string | undefined
+    @Input() message: string | undefined
 
-  constructor() {}
+    constructor() {}
 }
