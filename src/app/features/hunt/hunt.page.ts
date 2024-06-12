@@ -12,6 +12,7 @@ import {
   IonItem,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
@@ -48,6 +49,7 @@ export class HuntPage implements OnInit, OnDestroy {
     private router: Router,
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
+    private toastController: ToastController,
   ) {}
 
   ngOnInit() {
@@ -62,7 +64,7 @@ export class HuntPage implements OnInit, OnDestroy {
 
     this.huntCommunicationService.cancelHunt$.subscribe(() => {
       if (!this.resetInProgress) {
-        this.resetHunt();
+        this.showCancelToastAndReset();
       }
     });
   }
@@ -108,5 +110,20 @@ export class HuntPage implements OnInit, OnDestroy {
     this.huntService.currentTaskIndex = 0;
     this.huntCommunicationService.cancelHunt();
     this.resetInProgress = false;
+  }
+
+  private async showCancelToastAndReset() {
+    this.toastController
+      .create({
+        message: this.huntMeta.name + ' has been canceled',
+        duration: 2000,
+        position: 'top',
+      })
+      .then((toast) => {
+        toast.present().then(() => {
+          this.resetInProgress = false;
+          this.resetHunt();
+        });
+      });
   }
 }
