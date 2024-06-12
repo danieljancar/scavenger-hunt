@@ -15,7 +15,7 @@
   <app-loading />
   } @else { @if (hunts.length > 0) {
   <ion-accordion-group expand="inset">
-    @for (hunt of hunts; track hunt.date) {
+    @for (hunt of hunts; track hunt.name) {
     <ion-accordion [value]="hunt">
       <ion-item slot="header" color="transparent">
         <ion-label>

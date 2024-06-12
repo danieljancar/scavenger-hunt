@@ -19,6 +19,11 @@ export class HuntService {
     'Lion Heart',
     'Shadow Fox',
     'Silver Serpent',
+    'Golden Dragon',
+    'Emerald Tiger',
+    'Ruby Raven',
+    'Sapphire Wolf',
+    'Diamond Dolphin',
   ];
 
   constructor(
