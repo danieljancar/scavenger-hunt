@@ -1,9 +1,15 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { HuntMeta } from '../../../../types/hunt.types';
 import { HuntService } from '../../../../core/data/hunt.service';
 import { HuntCommunicationService } from '../../../../core/util/hunt-communication.service';
 import { addIcons } from 'ionicons';
-import { cameraOutline, phonePortraitOutline } from 'ionicons/icons';
+import { phonePortraitOutline } from 'ionicons/icons';
 import {
   IonButton,
   IonButtons,
@@ -15,6 +21,9 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { Haptics } from '@capacitor/haptics';
+import { ChangeDetection } from '@angular/cli/lib/config/workspace-schema';
 
 @Component({
   selector: 'app-orientation',
@@ -36,12 +45,13 @@ import {
 export class OrientationComponent implements OnInit {
   @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>();
   protected huntMeta!: HuntMeta;
-  protected taskDone = true;
+  protected taskDone = false;
   private taskStartTime!: Date;
 
   constructor(
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     addIcons({ phonePortraitOutline });
   }
@@ -49,6 +59,7 @@ export class OrientationComponent implements OnInit {
   async ngOnInit() {
     this.huntMeta = await this.huntService.getCurrentHuntMeta();
     this.taskStartTime = new Date();
+    await this.listenForOrientationChange();
   }
 
   onCancelHunt() {
@@ -59,6 +70,26 @@ export class OrientationComponent implements OnInit {
 
   async continueTask() {
     await this.completeTask();
+  }
+
+  private async listenForOrientationChange() {
+    try {
+      await ScreenOrientation.lock({ orientation: 'any' });
+
+      await ScreenOrientation.addListener(
+        'screenOrientationChange',
+        async (event) => {
+          if (event.type === 'portrait-secondary') {
+            await Haptics.vibrate().then(() => {
+              this.taskDone = true;
+              this.changeDetectorRef.detectChanges();
+            });
+          }
+        },
+      );
+    } catch (error) {
+      console.error('Failed to lock screen orientation', error);
+    }
   }
 
   private async completeTask() {

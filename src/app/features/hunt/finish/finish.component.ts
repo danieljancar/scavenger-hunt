@@ -6,6 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import {
+  AlertController,
   IonButton,
   IonButtons,
   IonContent,
@@ -17,6 +18,7 @@ import {
   IonNote,
   IonTitle,
   IonToolbar,
+  ToastController,
 } from '@ionic/angular/standalone';
 import { HuntMeta, ScavengerHunt } from '../../../types/hunt.types';
 import { HuntService } from '../../../core/data/hunt.service';
@@ -57,6 +59,8 @@ export class FinishComponent implements OnInit {
     private huntService: HuntService,
     private huntCommunicationService: HuntCommunicationService,
     private router: Router,
+    private toastController: ToastController,
+    private alertController: AlertController,
   ) {
     addIcons({ happyOutline });
   }
@@ -98,16 +102,61 @@ export class FinishComponent implements OnInit {
 
       await this.huntService.saveHunts(hunts);
       this.resetHunt.emit();
-      await this.router.navigate(['/tabs/home']);
+      await this.router.navigate(['/tabs/home']).then(() => {
+        this.toastController
+          .create({
+            message: this.huntMeta.name + ' has been saved!',
+            duration: 2000,
+            color: 'success',
+            position: 'top',
+          })
+          .then((toast) => {
+            toast.present();
+          });
+      });
     } else {
-      console.error('Error: HuntMeta time.start or time.end is undefined');
+      this.toastController
+        .create({
+          message: 'An error occurred while saving the hunt.',
+          duration: 2000,
+          color: 'danger',
+          position: 'top',
+        })
+        .then((t) => {
+          t.present();
+        })
+        .finally(() => {
+          this.resetHunt.emit();
+          this.huntService.currentTaskIndex = 0;
+          this.huntCommunicationService.cancelHunt();
+          this.discardHunt();
+        });
     }
   }
 
   async discardHunt() {
-    await this.huntService.clearCurrentHuntMeta();
-    this.huntService.currentTaskIndex = 0;
-    this.resetHunt.emit();
-    await this.router.navigate(['/tabs/home']);
+    this.alertController
+      .create({
+        header: 'Discard Hunt',
+        message: 'Are you sure you want to discard the hunt?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+          },
+          {
+            text: 'Discard',
+            handler: async () => {
+              this.resetHunt.emit();
+              await this.huntService.clearCurrentHuntMeta();
+              this.huntService.currentTaskIndex = 0;
+              await this.router.navigate(['/tabs/home']);
+            },
+          },
+        ],
+      })
+      .then((alert) => {
+        alert.present();
+      });
   }
 }

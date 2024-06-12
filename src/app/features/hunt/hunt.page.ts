@@ -96,7 +96,6 @@ export class HuntPage implements OnInit, OnDestroy {
       return;
     }
     this.resetInProgress = true;
-    console.log('Hunt reset');
     this.huntStarted = false;
     this.huntMeta = {
       penalties: 0,

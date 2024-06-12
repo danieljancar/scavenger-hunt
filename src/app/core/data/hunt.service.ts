@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { Router } from '@angular/router';
 import { ScavengerHunt, HuntMeta } from '../../types/hunt.types';
+import { AlertController, ToastController } from '@ionic/angular/standalone';
+import { HuntCommunicationService } from '../util/hunt-communication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,14 +14,31 @@ export class HuntService {
   private readonly CURRENT_HUNT_KEY = 'currentHunt';
   private readonly tasks = ['geolocation', 'qrcode', 'orientation', 'charge'];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private alertController: AlertController,
+    private huntCommunicationService: HuntCommunicationService,
+    private toastController: ToastController,
+  ) {}
 
   async getHunts(): Promise<ScavengerHunt[]> {
     try {
       const { value } = await Preferences.get({ key: this.HUNTS_KEY });
       return value ? JSON.parse(value) : [];
     } catch (error) {
-      console.error('Error getting hunts from Preferences:', error);
+      this.alertController
+        .create({
+          header: 'Error',
+          message: 'Error getting hunts from Preferences',
+          buttons: ['OK'],
+        })
+        .then((alert) => alert.present())
+        .finally(() => {
+          this.router.navigate(['/tabs/hunt']).then(() => {
+            console.error('Error getting hunts from Preferences', error);
+            this.huntCommunicationService.cancelHunt();
+          });
+        });
       return [];
     }
   }
@@ -31,7 +50,19 @@ export class HuntService {
         value: JSON.stringify(hunts),
       });
     } catch (error) {
-      console.error('Error saving hunts to Preferences:', error);
+      this.alertController
+        .create({
+          header: 'Error',
+          message: 'Error saving hunts to Preferences',
+          buttons: ['OK'],
+        })
+        .then((alert) => alert.present())
+        .finally(() => {
+          this.router.navigate(['/tabs/hunt']).then(() => {
+            console.error('Error saving hunts to Preferences', error);
+            this.huntCommunicationService.cancelHunt();
+          });
+        });
     }
   }
 
@@ -43,7 +74,19 @@ export class HuntService {
         await this.saveHunts(hunts);
       }
     } catch (error) {
-      console.error('Error deleting hunt:', error);
+      this.alertController
+        .create({
+          header: 'Error',
+          message: 'Error deleting hunt from Preferences',
+          buttons: ['OK'],
+        })
+        .then((alert) => alert.present())
+        .finally(() => {
+          this.router.navigate(['/tabs/hunt']).then(() => {
+            console.error('Error deleting hunt from Preferences', error);
+            this.huntCommunicationService.cancelHunt();
+          });
+        });
     }
   }
 
@@ -83,27 +126,40 @@ export class HuntService {
   }
 
   async completeHunt(huntMeta: HuntMeta) {
-    console.log('complete hunt (hunt.service)');
     huntMeta.time.end = new Date();
     await this.saveCurrentHuntMeta(huntMeta);
     await this.router.navigate(['/tabs/hunt/finish']);
   }
 
   async getCurrentHuntMeta(): Promise<HuntMeta> {
-    console.log('getting current hunt meta');
     const { value } = await Preferences.get({ key: this.CURRENT_HUNT_KEY });
     return value ? JSON.parse(value) : null;
   }
 
   async saveCurrentHuntMeta(huntMeta: HuntMeta): Promise<void> {
     try {
-      console.log('saving current hunt meta (as meta)');
       await Preferences.set({
         key: this.CURRENT_HUNT_KEY,
         value: JSON.stringify(huntMeta),
       });
     } catch (error) {
-      console.error('Error saving current hunt meta to Preferences:', error);
+      this.toastController
+        .create({
+          message: 'Error saving current hunt meta to Preferences',
+          duration: 2000,
+          position: 'bottom',
+          color: 'danger',
+        })
+        .then((toast) => toast.present())
+        .finally(() => {
+          this.router.navigate(['/tabs/hunt']).then(() => {
+            console.error(
+              'Error saving current hunt meta to Preferences',
+              error,
+            );
+            this.huntCommunicationService.cancelHunt();
+          });
+        });
     }
   }
 
@@ -112,10 +168,21 @@ export class HuntService {
       console.log('clearing hunt meta');
       await Preferences.remove({ key: this.CURRENT_HUNT_KEY });
     } catch (error) {
-      console.error(
-        'Error clearing current hunt meta from Preferences:',
-        error,
-      );
+      this.toastController
+        .create({
+          message: 'Error clearing current hunt meta from Preferences',
+          duration: 2000,
+          position: 'bottom',
+          color: 'danger',
+        })
+        .then((toast) => toast.present())
+        .finally(() => {
+          console.error(
+            'Error clearing current hunt meta from Preferences',
+            error,
+          );
+          this.huntCommunicationService.cancelHunt();
+        });
     }
   }
 

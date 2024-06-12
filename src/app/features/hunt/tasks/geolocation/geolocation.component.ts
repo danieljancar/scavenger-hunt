@@ -92,8 +92,9 @@ export class GeolocationComponent implements OnInit {
       this.targetLongitude,
     );
     if (distance <= this.proximityThreshold) {
-      await Haptics.vibrate();
-      this.taskDone = true;
+      await Haptics.vibrate().then(() => {
+        this.taskDone = true;
+      });
     }
   }
 

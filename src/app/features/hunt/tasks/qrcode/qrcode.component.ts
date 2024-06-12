@@ -75,8 +75,9 @@ export class QrcodeComponent implements OnInit {
       });
 
       if (result.ScanResult === 'nicht M335@ICT-BZ') {
-        this.taskDone = true;
-        await Haptics.vibrate();
+        await Haptics.vibrate().then(() => {
+          this.taskDone = true;
+        });
       }
       console.log(result);
     } catch (error) {
