@@ -91,7 +91,7 @@ export class QrcodeComponent implements OnInit {
                     })
 
                     if (result.ScanResult === 'M335@ICT-BZ') {
-                        await Haptics.vibrate({ duration: 1500 }).then(() => {
+                        await Haptics.vibrate().then(() => {
                             this.taskDone = true
                             this.changeDetectorRef.detectChanges()
                         })

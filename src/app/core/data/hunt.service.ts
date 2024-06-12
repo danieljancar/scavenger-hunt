@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Preferences } from '@capacitor/preferences'
 import { Router } from '@angular/router'
-import { ScavengerHunt, HuntMeta } from '../../types/hunt.types'
+import { HuntMeta, ScavengerHunt } from '../../types/hunt.types'
 import { AlertController, ToastController } from '@ionic/angular/standalone'
 import { HuntCommunicationService } from '../util/hunt-communication.service'
 
@@ -149,7 +149,6 @@ export class HuntService {
     async completeHunt(huntMeta: HuntMeta) {
         huntMeta.time.end = new Date()
         await this.saveCurrentHuntMeta(huntMeta)
-        await this.router.navigate(['/tabs/hunt/finish'])
     }
 
     async getCurrentHuntMeta(): Promise<HuntMeta> {

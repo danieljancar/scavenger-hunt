@@ -12,7 +12,7 @@
     </ion-header>
 
     @if (!isLoading) {
-    <ion-note class="ion-padding-horizontal ion-margin-top"> Access </ion-note>
+    <ion-note class="ion-padding-horizontal ion-margin-top"> Access</ion-note>
     <ion-list [inset]="true" lines="full">
         <ion-item>
             <ion-label slot="start">Geolocation</ion-label>
@@ -36,7 +36,7 @@
     } @if (isLoading) {
     <app-loading />
     } @else if (deviceInfo) {
-    <ion-note class="ion-padding-horizontal"> Device </ion-note>
+    <ion-note class="ion-padding-horizontal"> Device</ion-note>
     <ion-list [inset]="true" lines="full">
         @if (deviceInfo.name) {
         <ion-item>
@@ -63,29 +63,30 @@
             <ion-note slot="end">{{ deviceInfo.manufacturer }}</ion-note>
         </ion-item>
     </ion-list>
-
-    <ion-note class="ion-padding-horizontal"> Memory </ion-note>
+    @if (deviceInfo.memUsed) {
+    <ion-note class="ion-padding-horizontal"> Memory</ion-note>
+    }
     <ion-list [inset]="true" lines="full">
         @if (deviceInfo.memUsed) {
         <ion-item>
             <ion-label slot="start">Memory Usage</ion-label>
             <ion-note slot="end"
-                >{{ deviceInfo.memUsed | formatBytes }}</ion-note
-            >
+                >{{ deviceInfo.memUsed | formatBytes }}
+            </ion-note>
         </ion-item>
         } @if (deviceInfo.diskFree) {
         <ion-item>
             <ion-label slot="start">Disk Free</ion-label>
             <ion-note slot="end"
-                >{{ deviceInfo.diskFree | formatBytes }}</ion-note
-            >
+                >{{ deviceInfo.diskFree | formatBytes }}
+            </ion-note>
         </ion-item>
         } @if (deviceInfo.diskTotal) {
         <ion-item>
             <ion-label slot="start">Disk Total</ion-label>
             <ion-note slot="end"
-                >{{ deviceInfo.diskTotal | formatBytes }}</ion-note
-            >
+                >{{ deviceInfo.diskTotal | formatBytes }}
+            </ion-note>
         </ion-item>
         } @if (deviceInfo.realDiskFree) {
         <ion-item>
@@ -102,7 +103,7 @@
         }
     </ion-list>
     } @if (storageUsage !== null) {
-    <ion-note class="ion-padding-horizontal"> Storage </ion-note>
+    <ion-note class="ion-padding-horizontal"> Storage</ion-note>
     <ion-list [inset]="true" lines="full">
         <ion-item>
             <ion-label slot="start">Storage Usage</ion-label>
@@ -111,12 +112,12 @@
     </ion-list>
     }
     <ion-button
-        [disabled]="clearStorageButtonLoading || storageUsage === 0"
-        fill="outline"
-        color="primary"
-        class="ion-padding-horizontal"
-        expand="block"
         (click)="clearStorage()"
+        [disabled]="clearStorageButtonLoading || storageUsage === 0"
+        class="ion-padding-horizontal"
+        color="primary"
+        expand="block"
+        fill="outline"
     >
         Clear Storage
     </ion-button>

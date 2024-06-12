@@ -52,7 +52,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     private taskStartTime!: Date
     private targetLatitude = 47.072007
     private targetLongitude = 8.348967
-    private proximityThreshold = 10 // In meters
+    private proximityThreshold = 50 // In meters
     private watchPositionId: string | undefined
 
     constructor(
@@ -105,7 +105,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
         )
         if (distance <= this.proximityThreshold) {
             this.taskDone = true
-            Haptics.vibrate({ duration: 1500 })
+            Haptics.vibrate()
             this.changeDetectorRef.detectChanges()
         }
     }

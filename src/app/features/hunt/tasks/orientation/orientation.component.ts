@@ -79,7 +79,7 @@ export class OrientationComponent implements OnInit {
                 'screenOrientationChange',
                 async (event) => {
                     if (event.type === 'portrait-secondary') {
-                        await Haptics.vibrate({ duration: 1500 }).then(() => {
+                        await Haptics.vibrate().then(() => {
                             this.taskDone = true
                             this.changeDetectorRef.detectChanges()
                         })
