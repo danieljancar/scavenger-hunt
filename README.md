@@ -1,8 +1,9 @@
 <div align="center">
     <img src="src/assets/icon/playstore.png" width="250" height="250" alt="ScavengerHunt icon>
-    <h1>ScavengerHunt</h1>
-    <p>A hybrid iOS app made with Ionic & Angular for a educational module.</p>
 </div>
+
+<h1>ScavengerHunt</h1>
+<p>A hybrid iOS app made with Ionic & Angular for a educational module.</p>
 
 <div align="center">
 
