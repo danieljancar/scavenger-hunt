@@ -52,7 +52,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
     private taskStartTime!: Date
     private targetLatitude = 47.072007
     private targetLongitude = 8.348967
-    private proximityThreshold = 50 // In meters
+    private proximityThreshold = 20 // In meters
     private watchPositionId: string | undefined
 
     constructor(

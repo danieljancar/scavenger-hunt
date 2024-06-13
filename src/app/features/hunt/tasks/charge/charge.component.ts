@@ -99,7 +99,8 @@ export class ChargeComponent implements OnInit, OnDestroy {
             if (result.isCharging) {
                 await this.presentToast(
                     'Device is already charging, you can proceed.',
-                    'warning'
+                    'warning',
+                    500
                 )
                 await Haptics.vibrate()
                 this.taskDone = true
@@ -135,10 +136,14 @@ export class ChargeComponent implements OnInit, OnDestroy {
         await this.presentToast('Failed to get battery info', 'danger')
     }
 
-    private async presentToast(message: string, color: string) {
+    private async presentToast(
+        message: string,
+        color: string,
+        duration: number = 1000
+    ) {
         const toast = await this.toastController.create({
             message: message,
-            duration: 2000,
+            duration: duration,
             color: color,
             position: 'top',
         })
