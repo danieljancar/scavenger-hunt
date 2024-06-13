@@ -1,4 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    OnDestroy,
+    OnInit,
+    Output,
+} from '@angular/core'
 import {
     IonButton,
     IonButtons,
@@ -18,6 +25,7 @@ import { addIcons } from 'ionicons'
 import { batteryHalfOutline } from 'ionicons/icons'
 import { Device } from '@capacitor/device'
 import { Haptics } from '@capacitor/haptics'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-charge',
@@ -36,16 +44,19 @@ import { Haptics } from '@capacitor/haptics'
         IonToolbar,
     ],
 })
-export class ChargeComponent implements OnInit {
+export class ChargeComponent implements OnInit, OnDestroy {
     @Output() resetHunt: EventEmitter<void> = new EventEmitter<void>()
     protected huntMeta!: HuntMeta
     protected taskDone = false
     private taskStartTime!: Date
+    private chargingStatusCheckInterval: any
 
     constructor(
         private huntService: HuntService,
         private huntCommunicationService: HuntCommunicationService,
-        private toastController: ToastController
+        private toastController: ToastController,
+        private router: Router,
+        private changeDetectorRef: ChangeDetectorRef
     ) {
         addIcons({ batteryHalfOutline })
     }
@@ -54,6 +65,14 @@ export class ChargeComponent implements OnInit {
         this.huntMeta = await this.huntService.getCurrentHuntMeta()
         this.taskStartTime = new Date()
         await this.startChargeStatus()
+    }
+
+    ionViewWillLeave() {
+        this.cleanup()
+    }
+
+    ngOnDestroy() {
+        this.cleanup()
     }
 
     onCancelHunt() {
@@ -66,66 +85,77 @@ export class ChargeComponent implements OnInit {
         await this.completeTask()
     }
 
-    public async startChargeStatus() {
+    private cleanup() {
+        if (this.chargingStatusCheckInterval) {
+            clearInterval(this.chargingStatusCheckInterval)
+        }
+        this.taskDone = false
+    }
+
+    private async startChargeStatus() {
         try {
             const result = await Device.getBatteryInfo()
 
             if (result.isCharging) {
-                this.toastController
-                    .create({
-                        message: 'Device is already charging, task completed',
-                        duration: 2000,
-                        color: 'warning',
-                        position: 'top',
-                    })
-                    .then((t) => t.present())
-                await this.completeTask()
+                await this.presentToast(
+                    'Device is already charging, you can proceed.',
+                    'warning'
+                )
+                await Haptics.vibrate()
+                this.taskDone = true
+                this.changeDetectorRef.detectChanges()
             } else {
-                await this.checkChargingStatus()
+                this.checkChargingStatus()
             }
         } catch (error) {
             console.error('Failed to get battery info', error)
-            this.failedToGetBatteryInfo()
+            await this.failedToGetBatteryInfo()
         }
     }
 
-    private async checkChargingStatus() {
-        let isCharging: boolean | undefined = false
-
-        while (!isCharging) {
-            await new Promise((resolve) => setTimeout(resolve, 500))
-
+    private checkChargingStatus() {
+        this.chargingStatusCheckInterval = setInterval(async () => {
             try {
                 const result = await Device.getBatteryInfo()
-                isCharging = result.isCharging
+                if (result.isCharging) {
+                    await Haptics.vibrate()
+                    this.taskDone = true
+                    this.changeDetectorRef.detectChanges()
+                    clearInterval(this.chargingStatusCheckInterval)
+                }
             } catch (error) {
                 console.error('Failed to get battery info', error)
-                this.failedToGetBatteryInfo()
-                return
+                await this.failedToGetBatteryInfo()
+                clearInterval(this.chargingStatusCheckInterval)
             }
-        }
-
-        await this.completeTask()
+        }, 500)
     }
 
-    private failedToGetBatteryInfo() {
-        this.toastController
-            .create({
-                message: 'Failed to get battery info',
-                duration: 2000,
-                color: 'danger',
-                position: 'top',
-            })
-            .then((t) => t.present())
+    private async failedToGetBatteryInfo() {
+        await this.presentToast('Failed to get battery info', 'danger')
+    }
+
+    private async presentToast(message: string, color: string) {
+        const toast = await this.toastController.create({
+            message: message,
+            duration: 2000,
+            color: color,
+            position: 'top',
+        })
+        await toast.present()
     }
 
     private async completeTask() {
-        await Haptics.vibrate().then(() => {
-            this.taskDone = true
-        })
-        const endTimeHuntMeta = await this.huntService.getCurrentHuntMeta()
-        endTimeHuntMeta.time.end = new Date()
-        await this.huntService.saveCurrentHuntMeta(endTimeHuntMeta)
-        await this.huntService.completeCurrentTask(this.taskStartTime)
+        try {
+            const endTimeHuntMeta = await this.huntService.getCurrentHuntMeta()
+            endTimeHuntMeta.time.end = new Date()
+
+            await this.huntService.saveCurrentHuntMeta(endTimeHuntMeta)
+            await this.huntService.completeCurrentTask(this.taskStartTime)
+
+            await this.router.navigate(['/tabs/hunt/finish'])
+        } catch (error) {
+            console.error('Error completing task', error)
+        }
     }
 }
