@@ -23,6 +23,8 @@ PODS:
     - Capacitor
   - CapacitorScreenOrientation (6.0.0):
     - Capacitor
+  - CapacitorSplashScreen (6.0.0):
+    - Capacitor
   - CapacitorStatusBar (6.0.0):
     - Capacitor
   - OSBarcodeLib (1.1.0)
@@ -40,6 +42,7 @@ DEPENDENCIES:
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorScreenOrientation (from `../../node_modules/@capacitor/screen-orientation`)"
+  - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
 
 SPEC REPOS:
@@ -71,6 +74,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/preferences"
   CapacitorScreenOrientation:
     :path: "../../node_modules/@capacitor/screen-orientation"
+  CapacitorSplashScreen:
+    :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
 
@@ -87,9 +92,10 @@ SPEC CHECKSUMS:
   CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
   CapacitorPreferences: c9b839a80baa72e4ed4bdb117618e1950d3046b5
   CapacitorScreenOrientation: d78ce2b710bfcd1c32d3a090d32b6686c1c95e4f
+  CapacitorSplashScreen: 5431ab8d19c1c6e95777d53bfaa7a36a6c3d94c7
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   OSBarcodeLib: ced133bc1ec073636e18c6a0553d0a5c4b90cf17
 
-PODFILE CHECKSUM: 89250e477f5b7e29247b9ddd85b0df1ffd428104
+PODFILE CHECKSUM: a8b056b1e06d6112cd761118f5e0bd8678fef2d0
 
 COCOAPODS: 1.15.2
