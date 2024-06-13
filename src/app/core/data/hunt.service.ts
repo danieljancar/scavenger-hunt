@@ -130,16 +130,19 @@ export class HuntService {
 
     async completeCurrentTask(taskStartTime: Date) {
         const huntMeta = await this.getCurrentHuntMeta()
+        const taskEndTime = new Date()
+        const { rewards, penalties } = this.calculateRewardsAndPenalties(
+            taskStartTime,
+            taskEndTime
+        )
+
+        huntMeta.rewards += rewards
+        huntMeta.penalties += penalties
+
+        await this.saveCurrentHuntMeta(huntMeta)
+
         if (this.currentTaskIndex < this.tasks.length - 1) {
             this.currentTaskIndex++
-            const taskEndTime = new Date()
-            const { rewards, penalties } = this.calculateRewardsAndPenalties(
-                taskStartTime,
-                taskEndTime
-            )
-            huntMeta.rewards += rewards
-            huntMeta.penalties += penalties
-            await this.saveCurrentHuntMeta(huntMeta)
             await this.navigateToCurrentTask(huntMeta)
         } else {
             await this.completeHunt(huntMeta)

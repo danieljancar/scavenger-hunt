@@ -68,7 +68,13 @@ export class OrientationComponent implements OnInit {
     }
 
     async continueTask() {
-        await this.completeTask()
+        if (this.taskDone) {
+            await this.completeTask()
+        } else {
+            console.warn(
+                'Task not completed yet. Awaiting proper orientation change.'
+            )
+        }
     }
 
     private async listenForOrientationChange() {
@@ -79,10 +85,9 @@ export class OrientationComponent implements OnInit {
                 'screenOrientationChange',
                 async (event) => {
                     if (event.type === 'portrait-secondary') {
-                        await Haptics.vibrate().then(() => {
-                            this.taskDone = true
-                            this.changeDetectorRef.detectChanges()
-                        })
+                        await Haptics.vibrate()
+                        this.taskDone = true
+                        this.changeDetectorRef.detectChanges()
                     }
                 }
             )
@@ -92,7 +97,7 @@ export class OrientationComponent implements OnInit {
     }
 
     private async completeTask() {
-        this.taskDone = true
         await this.huntService.completeCurrentTask(this.taskStartTime)
+        this.resetHunt.emit()
     }
 }

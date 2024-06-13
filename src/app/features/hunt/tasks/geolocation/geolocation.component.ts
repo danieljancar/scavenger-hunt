@@ -70,7 +70,24 @@ export class GeolocationComponent implements OnInit, OnDestroy {
         this.startLocationChecks()
     }
 
-    startLocationChecks() {
+    onCancelHunt() {
+        this.resetHunt.emit()
+        this.huntService.currentTaskIndex = 0
+        this.huntCommunicationService.cancelHunt()
+        this.clearLocationWatch()
+    }
+
+    async continueTask() {
+        if (this.taskDone) {
+            await this.completeTask()
+        }
+    }
+
+    ngOnDestroy() {
+        this.clearLocationWatch()
+    }
+
+    private startLocationChecks() {
         Geolocation.checkPermissions().then(async (status) => {
             if (status) {
                 this.watchPositionId = await Geolocation.watchPosition(
@@ -96,7 +113,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
         })
     }
 
-    checkProximity(position: Position) {
+    private checkProximity(position: Position) {
         const distance = this.calculateDistance(
             position.coords.latitude,
             position.coords.longitude,
@@ -104,13 +121,14 @@ export class GeolocationComponent implements OnInit, OnDestroy {
             this.targetLongitude
         )
         if (distance <= this.proximityThreshold) {
+            this.clearLocationWatch()
             this.taskDone = true
             Haptics.vibrate()
             this.changeDetectorRef.detectChanges()
         }
     }
 
-    calculateDistance(
+    private calculateDistance(
         lat1: number,
         lon1: number,
         lat2: number,
@@ -130,7 +148,7 @@ export class GeolocationComponent implements OnInit, OnDestroy {
         return R * c // Distance in meters
     }
 
-    async presentPermissionDeniedAlert() {
+    private async presentPermissionDeniedAlert() {
         await this.alertController
             .create({
                 header: 'Location Permission Required',
@@ -146,25 +164,10 @@ export class GeolocationComponent implements OnInit, OnDestroy {
                     },
                 ],
             })
-            .then((a) => a.present())
+            .then((alert) => alert.present())
     }
 
-    onCancelHunt() {
-        this.resetHunt.emit()
-        this.huntService.currentTaskIndex = 0
-        this.huntCommunicationService.cancelHunt()
-        if (this.watchPositionId) {
-            Geolocation.clearWatch({ id: this.watchPositionId })
-        }
-    }
-
-    async continueTask() {
-        if (this.taskDone) {
-            await this.completeTask()
-        }
-    }
-
-    ngOnDestroy() {
+    private clearLocationWatch() {
         if (this.watchPositionId) {
             Geolocation.clearWatch({ id: this.watchPositionId })
         }
