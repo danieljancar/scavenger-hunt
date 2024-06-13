@@ -125,7 +125,23 @@ export class HuntPage implements OnInit, OnDestroy {
             this.huntMeta.time.start = new Date()
             this.huntMeta.date = new Date()
 
-            await this.huntService.saveCurrentHuntMeta(this.huntMeta)
+            const huntStarted = await this.huntService.startHunt(
+                this.huntMeta.name
+            )
+
+            if (!huntStarted) {
+                this.alertController
+                    .create({
+                        header: 'Hunt Name Exists',
+                        message:
+                            'A hunt with the name ' +
+                            this.huntMeta.name +
+                            ' already exists. Please choose a different name.',
+                        buttons: ['OK'],
+                    })
+                    .then((alert) => alert.present())
+                return
+            }
 
             this.router
                 .navigate(['/tabs/hunt/geolocation'], {

@@ -111,7 +111,13 @@ export class HuntService {
         }
     }
 
-    async startHunt(name: string) {
+    async startHunt(name: string): Promise<boolean> {
+        const hunts: ScavengerHunt[] = await this.getHunts()
+
+        if (hunts.some((hunt) => hunt.name === name)) {
+            return false
+        }
+
         const huntMeta: HuntMeta = {
             name: name,
             rewards: 0,
@@ -125,7 +131,7 @@ export class HuntService {
             value: JSON.stringify(huntMeta),
         })
 
-        await this.navigateToCurrentTask(huntMeta)
+        return true
     }
 
     async completeCurrentTask(taskStartTime: Date) {
